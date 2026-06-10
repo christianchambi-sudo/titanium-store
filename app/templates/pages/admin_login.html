@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TITANIUM STORE — Acceso Admin</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --bg:#f8f8f6;
+  --bg2:#ffffff;
+  --bg3:#f0efec;
+  --bg4:#e8e7e3;
+  --sf:#e8e7e3;
+  --bo:rgba(26,25,23,0.08);
+  --bo2:rgba(26,25,23,0.14);
+  --go:#8a6535;
+  --gl:#6b4e28;
+  --gd:rgba(138,101,53,0.15);
+  --gg:rgba(138,101,53,0.07);
+  --tx:#1a1917;
+  --tm:#5c5a56;
+  --td:#9a9790;
+  --gr:#1f7a4a;
+  --grd:rgba(31,122,74,0.12);
+  --grb:rgba(31,122,74,0.22);
+  --am:#a06010;
+  --amd:rgba(160,96,16,0.12);
+  --amb:rgba(160,96,16,0.22);
+  --bl:#1a5fa5;
+  --bld:rgba(26,95,165,0.12);
+  --blb:rgba(26,95,165,0.22);
+  --rd:#b03030;
+  --rdd:rgba(176,48,48,0.12);
+  --rdb:rgba(176,48,48,0.22);
+  --fd:'Cormorant Garamond',Georgia,serif;
+  --fb:'DM Sans',system-ui,sans-serif;
+  --r:8px;--rl:14px;
+  --tr:0.18s cubic-bezier(0.4,0,0.2,1);
+  --sidebar:220px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--fb);min-height:100vh;display:flex;align-items:center;justify-content:center;-webkit-font-smoothing:antialiased;position:relative;overflow:hidden}
+body::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(201,169,110,0.06) 0%,transparent 65%);pointer-events:none}
+.card{width:380px;background:var(--bg2);border:1px solid var(--bo);border-radius:var(--rl);padding:2.5rem;position:relative;z-index:1}
+.card::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:60%;height:1px;background:linear-gradient(90deg,transparent,var(--go),transparent)}
+.logo{width:56px;height:56px;background:linear-gradient(135deg,var(--go),#7a5520);border-radius:var(--rl);margin:0 auto 1.5rem;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--bg)}
+.title{font-family:var(--fd);font-size:1.7rem;font-weight:300;text-align:center;color:var(--tx);margin-bottom:.25rem}
+.subtitle{font-size:.8rem;color:var(--td);text-align:center;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2rem}
+.field{margin-bottom:1.1rem}
+.label{display:block;font-size:.72rem;color:var(--td);letter-spacing:.09em;text-transform:uppercase;margin-bottom:6px}
+.input-wrap{position:relative}
+.input-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--td);font-size:1rem;pointer-events:none}
+input[type=text],input[type=password]{width:100%;background:var(--bg3);border:1px solid var(--bo);border-radius:var(--r);color:var(--tx);font-family:var(--fb);font-size:.92rem;padding:10px 12px 10px 38px;outline:none;transition:border-color var(--tr)}
+input:focus{border-color:var(--go)}
+input::placeholder{color:var(--td)}
+.btn{width:100%;background:linear-gradient(135deg,var(--go),#8a6535);border:none;border-radius:var(--r);color:var(--bg);font-family:var(--fb);font-size:.88rem;font-weight:600;padding:12px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:var(--tr);margin-top:.5rem}
+.btn:hover{opacity:.88;transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.error{background:rgba(224,92,92,0.1);border:1px solid rgba(224,92,92,0.28);border-radius:var(--r);color:var(--rd);font-size:.82rem;padding:9px 13px;margin-bottom:1.1rem;display:flex;align-items:center;gap:8px}
+.footer-note{font-size:.72rem;color:var(--td);text-align:center;margin-top:1.5rem}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:fadeIn .45s ease both}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo"><i class="ti ti-speakerphone"></i></div>
+  <h1 class="title">Panel de Administración</h1>
+  <p class="subtitle">TITANIUM STORE</p>
+
+  {% if error %}
+  <div class="error"><i class="ti ti-alert-circle"></i> {{ error }}</div>
+  {% endif %}
+
+  <form method="post" action="/admin/login">
+    <div class="field">
+      <label class="label">Usuario</label>
+      <div class="input-wrap">
+        <i class="ti ti-user"></i>
+        <input type="text" name="username" placeholder="tu usuario" autocomplete="username" required autofocus>
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">Contraseña</label>
+      <div class="input-wrap">
+        <i class="ti ti-lock"></i>
+        <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+    </div>
+    <button class="btn" type="submit">Ingresar</button>
+  </form>
+  <p class="footer-note">Acceso restringido · Solo personal autorizado</p>
+</div>
+</body>
+</html>

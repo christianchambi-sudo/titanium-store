@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TITANIUM STORE — Panel Admin</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#f8f8f6;
+  --bg2:#ffffff;
+  --bg3:#f0efec;
+  --bg4:#e8e7e3;
+  --sf:#e8e7e3;
+  --bo:rgba(26,25,23,0.08);
+  --bo2:rgba(26,25,23,0.14);
+  --go:#8a6535;
+  --gl:#6b4e28;
+  --gd:rgba(138,101,53,0.15);
+  --gg:rgba(138,101,53,0.07);
+  --tx:#1a1917;
+  --tm:#5c5a56;
+  --td:#9a9790;
+  --gr:#1f7a4a;
+  --grd:rgba(31,122,74,0.12);
+  --grb:rgba(31,122,74,0.22);
+  --am:#a06010;
+  --amd:rgba(160,96,16,0.12);
+  --amb:rgba(160,96,16,0.22);
+  --bl:#1a5fa5;
+  --bld:rgba(26,95,165,0.12);
+  --blb:rgba(26,95,165,0.22);
+  --rd:#b03030;
+  --rdd:rgba(176,48,48,0.12);
+  --rdb:rgba(176,48,48,0.22);
+  --fd:'Cormorant Garamond',Georgia,serif;
+  --fb:'DM Sans',system-ui,sans-serif;
+  --r:8px;--rl:14px;
+  --tr:0.18s cubic-bezier(0.4,0,0.2,1);
+  --sidebar:220px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-size:15px}
+body{background:var(--bg);color:var(--tx);font-family:var(--fb);display:flex;-webkit-font-smoothing:antialiased;overflow:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--sf);border-radius:2px}
+
+.sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--bo);display:flex;flex-direction:column;flex-shrink:0;height:100vh;overflow-y:auto}
+.sb-logo{padding:1.2rem 1.2rem 1rem;border-bottom:1px solid var(--bo);display:flex;align-items:center;gap:9px}
+.sb-ic{width:32px;height:32px;background:linear-gradient(135deg,var(--go),#7a5520);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--bg);flex-shrink:0}
+.sb-brand{font-family:var(--fd);font-size:1.05rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gl);line-height:1.1}
+.sb-ver{font-size:.6rem;color:var(--td);letter-spacing:.1em}
+.sb-user{padding:.9rem 1.2rem;border-bottom:1px solid var(--bo);display:flex;align-items:center;gap:8px}
+.sb-av{width:28px;height:28px;background:var(--gd);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--go);font-weight:600;flex-shrink:0}
+.sb-uname{font-size:.78rem;color:var(--tx);font-weight:500}
+.sb-urol{font-size:.65rem;color:var(--td);text-transform:uppercase;letter-spacing:.07em}
+.sb-nav{flex:1;padding:.5rem 0}
+.sb-section{font-size:.6rem;color:var(--td);letter-spacing:.12em;text-transform:uppercase;padding:.8rem 1.2rem .3rem;font-weight:500}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 1.2rem;font-size:.82rem;color:var(--tm);cursor:pointer;transition:var(--tr);border-left:2px solid transparent;text-decoration:none}
+.nav-item:hover{color:var(--tx);background:var(--bg3)}
+.nav-item.active{color:var(--go);border-left-color:var(--go);background:var(--gg)}
+.nav-item i{font-size:1rem;flex-shrink:0}
+.sb-footer{padding:.9rem 1.2rem;border-top:1px solid var(--bo)}
+.btn-salir{display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--td);cursor:pointer;text-decoration:none;transition:var(--tr)}
+.btn-salir:hover{color:var(--rd)}
+
+.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.topbar{height:52px;border-bottom:2px solid var(--go);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;flex-shrink:0;background:var(--bg2);backdrop-filter:blur(8px)}
+.page-title{font-family:var(--fd);font-size:1.15rem;font-weight:300;color:var(--tx)}
+.topbar-r{display:flex;align-items:center;gap:1rem}
+.db-badge{font-size:.7rem;padding:3px 10px;border-radius:20px;display:flex;align-items:center;gap:5px}
+.db-ok{background:var(--grd);color:var(--gr);border:1px solid var(--grb)}
+.db-off{background:var(--amd);color:var(--am);border:1px solid var(--amb)}
+.content{flex:1;overflow-y:auto;padding:1.5rem}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem;margin-bottom:1.5rem}
+.stat-card{background:var(--bg2);border:1px solid var(--bo);border-radius:var(--rl);padding:1.1rem 1.2rem;position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent,var(--go))}
+.stat-val{font-family:var(--fd);font-size:2rem;font-weight:300;color:var(--tx);line-height:1;margin-bottom:4px}
+.stat-lbl{font-size:.68rem;color:var(--td);letter-spacing:.08em;text-transform:uppercase}
+.stat-sub{font-size:.72rem;color:var(--tm);margin-top:5px}
+
+.box{background:var(--bg2);border:1px solid var(--bo);border-radius:var(--rl);margin-bottom:1.25rem}
+.box-hd{padding:.9rem 1.2rem;border-bottom:1px solid var(--bo);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.box-tt{font-family:var(--fd);font-size:1rem;font-weight:400;color:var(--tx);letter-spacing:.03em}
+.box-body{padding:1.2rem}
+
+/* TC */
+.tc-editor{display:flex;align-items:flex-end;gap:1.25rem;flex-wrap:wrap}
+.tc-big{background:var(--bg3);border:1px solid var(--bo);border-radius:var(--r);color:var(--gl);font-family:var(--fd);font-size:2.2rem;font-weight:300;padding:8px 16px;width:150px;outline:none;transition:border-color var(--tr);text-align:center}
+.tc-big:focus{border-color:var(--go)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:var(--r);font-family:var(--fb);font-size:.8rem;font-weight:500;padding:7px 14px;cursor:pointer;transition:var(--tr);border:1px solid transparent;letter-spacing:.03em;white-space:nowrap}
+.btn-gold{background:var(--gd);border-color:var(--go);color:var(--gl)}.btn-gold:hover{background:var(--go);color:var(--bg)}
+.btn-green{background:var(--grd);border-color:var(--grb);color:var(--gr)}.btn-green:hover{background:var(--gr);color:var(--bg)}
+.btn-blue{background:var(--bld);border-color:var(--blb);color:var(--bl)}.btn-blue:hover{background:var(--bl);color:#fff}
+.btn-red{background:var(--rdd);border-color:var(--rdb);color:var(--rd)}.btn-red:hover{background:var(--rd);color:#fff}
+.btn-amber{background:var(--amd);border-color:var(--amb);color:var(--am)}.btn-amber:hover{background:var(--am);color:var(--bg)}
+.btn-ghost{background:none;border-color:var(--bo2);color:var(--tm)}.btn-ghost:hover{border-color:var(--bo2);color:var(--tx)}
+.btn-sm{padding:4px 10px;font-size:.73rem}
+.btn-icon{padding:5px 7px}
+
+/* Tabla */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead th{text-align:left;padding:7px 10px;font-size:.67rem;color:var(--td);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--bo);font-weight:500;white-space:nowrap}
+tbody td{padding:9px 10px;border-bottom:1px solid var(--bo);color:var(--tm);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--bg3)}
+.mono{font-family:monospace;font-size:.78rem}
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:.67rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:20px}
+.b-pend{background:var(--amd);color:var(--am);border:1px solid var(--amb)}
+.b-conf{background:var(--grd);color:var(--gr);border:1px solid var(--grb)}
+.b-envi{background:var(--bld);color:var(--bl);border:1px solid var(--blb)}
+.b-canc{background:var(--rdd);color:var(--rd);border:1px solid var(--rdb)}
+.b-stk{background:var(--grd);color:var(--gr);border:1px solid var(--grb)}
+.b-prev{background:var(--amd);color:var(--am);border:1px solid var(--amb)}
+.b-oculto{background:var(--rdd);color:var(--rd);border:1px solid var(--rdb)}
+.b-inact{background:rgba(255,255,255,.05);color:var(--td);border:1px solid var(--bo)}
+
+/* Form */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.form-grid.cols3{grid-template-columns:1fr 1fr 1fr}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+.lbl{font-size:.7rem;color:var(--td);letter-spacing:.08em;text-transform:uppercase}
+.inp{background:var(--bg3);border:1px solid var(--bo);border-radius:var(--r);color:var(--tx);font-family:var(--fb);font-size:.85rem;padding:8px 11px;outline:none;transition:border-color var(--tr);width:100%}
+.inp:focus{border-color:var(--go)}
+select.inp option{background:var(--bg3)}
+textarea.inp{resize:vertical;min-height:68px}
+
+/* Precio preview */
+.precio-preview{background:var(--bg3);border:1px solid var(--bo);border-radius:var(--r);padding:.75rem 1rem;display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap}
+.prev-item{display:flex;flex-direction:column;gap:2px}
+.prev-lbl{font-size:.65rem;color:var(--td);letter-spacing:.07em;text-transform:uppercase}
+.prev-val{font-family:var(--fd);font-size:1.3rem;color:var(--gl)}
+.prev-val.min{color:var(--go)}
+
+/* Upload de imágenes */
+.img-upload-area{border:2px dashed var(--bo2);border-radius:var(--r);padding:1.25rem;text-align:center;cursor:pointer;transition:border-color var(--tr);background:var(--bg3)}
+.img-upload-area:hover{border-color:var(--go)}
+.img-upload-area input{display:none}
+.img-upload-area i{font-size:1.75rem;color:var(--td);display:block;margin-bottom:.4rem}
+.img-upload-area p{font-size:.78rem;color:var(--td)}
+.img-upload-area small{font-size:.68rem;color:var(--td)}
+.img-previews{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.75rem}
+.img-prev-item{position:relative;width:80px;height:80px;border-radius:var(--r);overflow:hidden;border:1px solid var(--bo)}
+.img-prev-item img{width:100%;height:100%;object-fit:cover}
+.img-prev-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.75);border:none;border-radius:4px;color:var(--rd);cursor:pointer;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:.7rem}
+.img-prev-portada{position:absolute;bottom:3px;left:3px;font-size:.55rem;background:var(--go);color:var(--bg);padding:1px 5px;border-radius:3px;font-weight:600}
+.img-count{font-size:.72rem;margin-top:.4rem}
+.img-count.ok{color:var(--gr)}
+.img-count.err{color:var(--rd)}
+
+/* Modal */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto}
+.modal-ov.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--bo2);border-radius:var(--rl);width:min(640px,100%);padding:1.5rem;margin:auto}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--bo)}
+.modal-tt{font-family:var(--fd);font-size:1.2rem;font-weight:300}
+.modal-ft{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.25rem;padding-top:.75rem;border-top:1px solid var(--bo)}
+
+/* Confirm modal */
+.confirm-modal{max-width:360px}
+
+/* Link mayor */
+.link-box{background:var(--bg3);border:1px solid var(--bo);border-radius:var(--r);padding:.85rem 1rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.link-url{font-family:monospace;font-size:.76rem;color:var(--gl);word-break:break-all;flex:1}
+
+/* Chart */
+.chart-wrap{position:relative;height:220px}
+
+/* Acciones inline tabla productos */
+.acciones{display:flex;gap:3px;flex-wrap:nowrap}
+
+/* Toast */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--sf);border:1px solid var(--bo2);border-radius:var(--r);padding:10px 18px;font-size:.82rem;color:var(--tx);z-index:9999;transform:translateY(60px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:8px;max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{border-color:var(--grb);color:var(--gr)}
+.toast.err{border-color:var(--rdb);color:var(--rd)}
+.toast.warn{border-color:var(--amb);color:var(--am)}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .form-grid,.form-grid.cols3{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-ic"><i class="ti ti-speakerphone"></i></div>
+    <div><div class="sb-brand">Titanium</div><div class="sb-ver">Admin v1.0</div></div>
+  </div>
+  <div class="sb-user">
+    <div class="sb-av" id="sbAv">A</div>
+    <div><div class="sb-uname">{{ user.nombre }}</div><div class="sb-urol">{{ user.rol }}</div></div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">Principal</div>
+    <a class="nav-item active" data-sec="dashboard" onclick="goTo('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</a>
+    <a class="nav-item" data-sec="tc" onclick="goTo('tc')"><i class="ti ti-currency-dollar"></i>Tipo de Cambio</a>
+    <div class="sb-section">Catálogo</div>
+    <a class="nav-item" data-sec="productos" onclick="goTo('productos')"><i class="ti ti-speakerphone"></i>Productos</a>
+    <a class="nav-item" data-sec="linkMayor" onclick="goTo('linkMayor')"><i class="ti ti-link"></i>Link Mayorista</a>
+    <div class="sb-section">Ventas</div>
+    <a class="nav-item" data-sec="pedidos" onclick="goTo('pedidos')"><i class="ti ti-shopping-cart"></i>Pedidos</a>
+    <a class="nav-item" data-sec="clientes" onclick="goTo('clientes')"><i class="ti ti-users"></i>Clientes</a>
+    <a class="nav-item" data-sec="reportes" onclick="goTo('reportes')"><i class="ti ti-chart-bar"></i>Reportes</a>
+    <div class="sb-section">Sistema</div>
+    <a class="nav-item" data-sec="usuarios" onclick="goTo('usuarios')"><i class="ti ti-user-cog"></i>Usuarios</a>
+    <a class="nav-item" href="/catalogo" target="_blank"><i class="ti ti-external-link"></i>Ver tienda</a>
+  </nav>
+  <div class="sb-footer">
+    <a class="btn-salir" href="/admin/salir"><i class="ti ti-logout"></i> Cerrar sesión</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <span class="page-title" id="pageTitle">Dashboard</span>
+    <div class="topbar-r">
+      <span class="db-badge {{ 'db-ok' if db_ok else 'db-off' }}">
+        <i class="ti ti-database"></i>{{ 'PostgreSQL' if db_ok else 'Modo demo' }}
+      </span>
+      <span style="font-size:.75rem;color:var(--td)" id="tcBadge">TC: …</span>
+    </div>
+  </div>
+
+  <div class="content" id="content">
+
+    <!-- ══ DASHBOARD ══ -->
+    <section id="sec-dashboard" class="sec-panel">
+      <div class="stat-grid">
+        <div class="stat-card" style="--accent:var(--go)"><div class="stat-val" id="dTc">—</div><div class="stat-lbl">Tipo de Cambio</div><div class="stat-sub">1 USD en Bs.</div></div>
+        <div class="stat-card" style="--accent:var(--gr)"><div class="stat-val" id="dProd">18</div><div class="stat-lbl">Productos activos</div><div class="stat-sub">en catálogo</div></div>
+        <div class="stat-card" style="--accent:var(--am)"><div class="stat-val" id="dPend">0</div><div class="stat-lbl">Pedidos pendientes</div><div class="stat-sub">sin confirmar</div></div>
+        <div class="stat-card" style="--accent:var(--bl)"><div class="stat-val" id="dTotal">Bs. 0</div><div class="stat-lbl">Ventas del mes</div><div class="stat-sub">en bolivianos</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="box"><div class="box-hd"><span class="box-tt">Pedidos recientes</span><button class="btn btn-ghost btn-sm" onclick="goTo('pedidos')">Ver todos</button></div><div class="box-body"><div id="dashPedidos"><p style="font-size:.8rem;color:var(--td);text-align:center;padding:1rem">Sin pedidos aún</p></div></div></div>
+        <div class="box"><div class="box-hd"><span class="box-tt">Ventas últimos 6 meses</span></div><div class="box-body"><div class="chart-wrap"><canvas id="chartVentas"></canvas></div></div></div>
+      </div>
+    </section>
+
+    <!-- ══ TIPO DE CAMBIO ══ -->
+    <section id="sec-tc" class="sec-panel" style="display:none">
+      <div class="box">
+        <div class="box-hd"><span class="box-tt">Actualizar Tipo de Cambio</span></div>
+        <div class="box-body">
+          <p style="font-size:.82rem;color:var(--tm);margin-bottom:1.25rem">Al guardar el nuevo TC, los precios en bolivianos de <strong>ambos catálogos</strong> (minorista y mayorista) se recalculan automáticamente para todos los clientes.</p>
+          <div class="tc-editor">
+            <div>
+              <div class="lbl" style="margin-bottom:6px">Nuevo TC (1 USD = ? Bs.)</div>
+              <input class="tc-big" type="number" id="tcNuevo" step="0.01" min="1" placeholder="6.97">
+            </div>
+            <div>
+              <div class="lbl" style="margin-bottom:6px">TC activo ahora</div>
+              <div style="font-size:1.1rem;color:var(--go);font-family:var(--fd)">1 USD = <span id="tcActualVal">…</span> Bs.</div>
+            </div>
+            <button class="btn btn-gold" onclick="actualizarTC()"><i class="ti ti-device-floppy"></i> Guardar TC</button>
+          </div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-hd"><span class="box-tt">Historial</span></div>
+        <div class="box-body">
+          <div class="tbl-wrap">
+            <table><thead><tr><th>Fecha</th><th>Valor</th><th>Fuente</th><th>Estado</th></tr></thead>
+            <tbody id="tcHistorial"><tr><td colspan="4" style="color:var(--td);text-align:center;padding:1rem">Sin historial en modo demo</td></tr></tbody></table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PRODUCTOS ══ -->
+    <section id="sec-productos" class="sec-panel" style="display:none">
+      <div class="box">
+        <div class="box-hd">
+          <span class="box-tt">Catálogo de productos</span>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="btn btn-ghost btn-sm" id="btnVerInactivos" onclick="toggleVerInactivos()"><i class="ti ti-eye-off"></i> Ver ocultos</button>
+            <button class="btn btn-gold" onclick="abrirModalNuevo()"><i class="ti ti-plus"></i> Nuevo producto</button>
+          </div>
+        </div>
+        <div class="box-body">
+          <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+            <input class="inp" style="width:190px" type="text" id="searchProd" placeholder="Buscar código o descripción…" oninput="filtrarTabla()">
+            <select class="inp" style="width:130px" id="fTipo" onchange="filtrarTabla()">
+              <option value="">Todos los tipos</option>
+              <option value="coaxial">Coaxial</option>
+              <option value="componente">Componente</option>
+              <option value="caja">Caja madera</option>
+              <option value="bajo">Bajo activo</option>
+            </select>
+            <select class="inp" style="width:120px" id="fStock" onchange="filtrarTabla()">
+              <option value="">Todo stock</option>
+              <option value="si">En stock</option>
+              <option value="no">Sin stock</option>
+            </select>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr>
+                <th>Código</th><th>Tamaño</th><th>Tipo</th>
+                <th>USD mayor</th><th>+ Recargo</th>
+                <th>Bs. mayor</th><th>Bs. minorista</th>
+                <th>Stock</th><th>Cajas</th><th>Uds/caja</th>
+                <th>Visibilidad</th><th>Acciones</th>
+              </tr></thead>
+              <tbody id="tblProductos"><tr><td colspan="12" style="color:var(--td);text-align:center;padding:1.5rem">Cargando…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ LINK MAYORISTA ══ -->
+    <section id="sec-linkMayor" class="sec-panel" style="display:none">
+      <div class="box">
+        <div class="box-hd"><span class="box-tt">Link del catálogo mayorista</span></div>
+        <div class="box-body">
+          <p style="font-size:.82rem;color:var(--tm);margin-bottom:1.25rem">Comparte este enlace <strong>solo por WhatsApp</strong> con tus clientes mayoristas. No aparece en buscadores. Sin necesidad de contraseña adicional.</p>
+          <div class="link-box">
+            <i class="ti ti-link" style="color:var(--go);font-size:1.1rem;flex-shrink:0"></i>
+            <span class="link-url" id="linkMayorUrl">Cargando…</span>
+            <button class="btn btn-gold btn-sm" onclick="copiarLink()"><i class="ti ti-copy"></i> Copiar</button>
+            <a class="btn btn-ghost btn-sm" id="linkMayorWA" href="#" target="_blank"><i class="ti ti-brand-whatsapp"></i> Compartir</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PEDIDOS ══ -->
+    <section id="sec-pedidos" class="sec-panel" style="display:none">
+      <div class="box">
+        <div class="box-hd">
+          <span class="box-tt">Pedidos recibidos</span>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <select class="inp btn-sm" style="width:130px" id="fEstado" onchange="filtrarPedidos()"><option value="">Todos</option><option value="pendiente">Pendientes</option><option value="confirmado">Confirmados</option><option value="enviado">Enviados</option></select>
+            <select class="inp btn-sm" style="width:120px" id="fTipoPed" onchange="filtrarPedidos()"><option value="">Mayor y menor</option><option value="mayorista">Mayorista</option><option value="minorista">Minorista</option></select>
+          </div>
+        </div>
+        <div class="box-body">
+          <div class="tbl-wrap">
+            <table><thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Tipo</th><th>TC</th><th>Total Bs.</th><th>Total USD</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody id="tblPedidos"><tr><td colspan="9" style="color:var(--td);text-align:center;padding:1.5rem">Sin pedidos en modo demo</td></tr></tbody></table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ CLIENTES ══ -->
+    <section id="sec-clientes" class="sec-panel" style="display:none">
+      <div class="box">
+        <div class="box-hd"><span class="box-tt">Clientes registrados</span><button class="btn btn-gold" onclick="abrirModal('modalCliente')"><i class="ti ti-plus"></i> Nuevo cliente</button></div>
+        <div class="box-body">
+          <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+            <input class="inp" style="width:190px" type="text" placeholder="Buscar nombre…" id="searchCli" oninput="filtrarClientes()">
+            <select class="inp" style="width:130px" id="fDepto" onchange="filtrarClientes()"><option value="">Todos los deptos.</option><option>La Paz</option><option>Cochabamba</option><option>Santa Cruz</option><option>Oruro</option><option>Potosí</option><option>Sucre</option><option>Tarija</option><option>Beni</option><option>Pando</option></select>
+            <select class="inp" style="width:120px" id="fTipoCli" onchange="filtrarClientes()"><option value="">Todos</option><option value="mayorista">Mayoristas</option><option value="minorista">Minoristas</option></select>
+          </div>
+          <div class="tbl-wrap">
+            <table><thead><tr><th>Nombre</th><th>Departamento</th><th>WhatsApp</th><th>Tipo</th><th>Acceso mayor</th><th>Último pedido</th><th>Acciones</th></tr></thead>
+            <tbody id="tblClientes"><tr><td colspan="7" style="color:var(--td);text-align:center;padding:1.5rem">Sin clientes en modo demo</td></tr></tbody></table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ REPORTES ══ -->
+    <section id="sec-reportes" class="sec-panel" style="display:none">
+      <div class="stat-grid">
+        <div class="stat-card" style="--accent:var(--go)"><div class="stat-val">Bs. 0</div><div class="stat-lbl">Ventas totales</div><div class="stat-sub">histórico</div></div>
+        <div class="stat-card" style="--accent:var(--gr)"><div class="stat-val">0</div><div class="stat-lbl">Pedidos confirmados</div><div class="stat-sub">histórico</div></div>
+        <div class="stat-card" style="--accent:var(--bl)"><div class="stat-val">0</div><div class="stat-lbl">Clientes atendidos</div></div>
+        <div class="stat-card" style="--accent:var(--am)"><div class="stat-val">0%</div><div class="stat-lbl">Pedidos mayoristas</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="box"><div class="box-hd"><span class="box-tt">Productos más pedidos</span></div><div class="box-body"><div class="chart-wrap"><canvas id="chartTop"></canvas></div></div></div>
+        <div class="box"><div class="box-hd"><span class="box-tt">Ventas por departamento</span></div><div class="box-body"><div class="chart-wrap"><canvas id="chartDepto"></canvas></div></div></div>
+      </div>
+      <div class="box" style="margin-top:1rem"><div class="box-hd"><span class="box-tt">Ventas por mes</span><button class="btn btn-ghost btn-sm" onclick="exportarCSV()"><i class="ti ti-download"></i> Exportar CSV</button></div><div class="box-body"><div class="chart-wrap" style="height:250px"><canvas id="chartMensual"></canvas></div></div></div>
+    </section>
+
+    <!-- ══ USUARIOS ══ -->
+    <section id="sec-usuarios" class="sec-panel" style="display:none">
+      <div class="box">
+        <div class="box-hd"><span class="box-tt">Usuarios del panel</span></div>
+        <div class="box-body">
+          <div class="tbl-wrap">
+            <table><thead><tr><th>Usuario</th><th>Nombre</th><th>Rol</th><th>Acciones</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">admin</td><td>Administrador</td><td><span class="badge b-conf">Admin</span></td><td><button class="btn btn-ghost btn-sm" onclick="abrirCambiarPass('admin')"><i class="ti ti-key"></i> Cambiar clave</button></td></tr>
+              <tr><td class="mono">encargado</td><td>Encargado</td><td><span class="badge b-pend">Encargado</span></td><td><button class="btn btn-ghost btn-sm" onclick="abrirCambiarPass('encargado')"><i class="ti ti-key"></i> Cambiar clave</button></td></tr>
+            </tbody></table>
+          </div>
+          <div style="margin-top:1rem;padding:.85rem;background:var(--bg3);border:1px solid var(--bo);border-radius:var(--r);font-size:.76rem;color:var(--td)">
+            💡 En producción, edita las contraseñas en <code style="color:var(--go)">app/auth.py</code> y reinicia el servidor.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ══ MODAL NUEVO/EDITAR PRODUCTO ══ -->
+<div class="modal-ov" id="modalProducto">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-tt" id="modalProdTt">Nuevo producto</span>
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="cerrarModal('modalProducto')"><i class="ti ti-x"></i></button>
+    </div>
+
+    <form id="formProducto" enctype="multipart/form-data">
+      <input type="hidden" id="pId" name="pid" value="">
+
+      <!-- Fila 1: identificación -->
+      <div class="form-grid" style="margin-bottom:.75rem">
+        <div class="field">
+          <label class="lbl">Código del producto *</label>
+          <input class="inp" id="pCodigo" name="codigo" placeholder="ej: TT-650C" required>
+        </div>
+        <div class="field">
+          <label class="lbl">Tipo *</label>
+          <select class="inp" id="pTipo" name="tipo" required>
+            <option value="coaxial">Coaxial</option>
+            <option value="componente">Componente</option>
+            <option value="caja">Caja madera</option>
+            <option value="bajo">Bajo activo</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="lbl">Tamaño *</label>
+          <select class="inp" id="pTamano" name="tamano" required>
+            <option>4"</option><option>5.25"</option><option>6.5"</option><option>6x9"</option><option>10"</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="lbl">Potencia</label>
+          <input class="inp" id="pPotencia" name="potencia" placeholder="ej: 300W max">
+        </div>
+        <div class="field full">
+          <label class="lbl">Descripción (visible en catálogo)</label>
+          <textarea class="inp" id="pDesc" name="descripcion" placeholder="Descripción breve del producto…"></textarea>
+        </div>
+      </div>
+
+      <!-- Fila 2: precios con preview en tiempo real -->
+      <div style="background:var(--bg3);border:1px solid var(--bo);border-radius:var(--r);padding:1rem;margin-bottom:.75rem">
+        <div class="lbl" style="margin-bottom:.75rem">Precios</div>
+        <div class="form-grid cols3" style="margin-bottom:.75rem">
+          <div class="field">
+            <label class="lbl">Precio USD mayorista *</label>
+            <input class="inp" type="number" id="pUsd" name="precio_venta_mayor_usd" step="0.01" min="0" placeholder="48.00" oninput="recalcPreview()" required>
+          </div>
+          <div class="field">
+            <label class="lbl">Recargo Bs. (minorista)</label>
+            <input class="inp" type="number" id="pRecargo" name="recargo_bob" step="1" min="0" value="80" oninput="recalcPreview()">
+          </div>
+          <div class="field">
+            <label class="lbl">Unidad de venta</label>
+            <select class="inp" id="pUnidad" name="unidad_venta">
+              <option value="par">Par</option><option value="set">Set</option><option value="unidad">Unidad</option>
+            </select>
+          </div>
+        </div>
+        <!-- Preview en tiempo real -->
+        <div class="precio-preview" id="precioPreview">
+          <div class="prev-item"><div class="prev-lbl">Precio mayor (Bs.)</div><div class="prev-val" id="prevMay">—</div></div>
+          <div style="color:var(--bo2);font-size:1.2rem">|</div>
+          <div class="prev-item"><div class="prev-lbl">Precio minorista (Bs.)</div><div class="prev-val min" id="prevMin">—</div></div>
+          <div style="font-size:.72rem;color:var(--td);margin-left:auto">TC actual: <span id="prevTc">6.97</span> Bs.</div>
+        </div>
+      </div>
+
+      <!-- Fila 3: stock interno -->
+      <div class="form-grid" style="margin-bottom:.75rem">
+        <div class="field">
+          <label class="lbl">Estado de stock</label>
+          <select class="inp" id="pStock" name="stock_fisico">
+            <option value="true">En stock (disponible inmediato)</option>
+            <option value="false">Sin stock (pedido previo)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="lbl">Visible en catálogo</label>
+          <select class="inp" id="pActivo" name="activo">
+            <option value="true">Sí — visible</option>
+            <option value="false">No — oculto</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="lbl">Cajas en stock (interno)</label>
+          <input class="inp" type="number" id="pCajas" name="cajas_en_stock" value="0" min="0">
+        </div>
+        <div class="field">
+          <label class="lbl">Unidades por caja (interno)</label>
+          <input class="inp" type="number" id="pUdsCaja" name="unidades_por_caja" value="0" min="0">
+        </div>
+      </div>
+
+      <!-- Fila 4: imágenes -->
+      <div style="margin-bottom:.75rem">
+        <div class="lbl" style="margin-bottom:.5rem">Imágenes del producto <span style="color:var(--rd)">*</span> <span style="color:var(--td);text-transform:none;letter-spacing:0;font-size:.7rem">(mínimo 2, la primera será la portada)</span></div>
+
+        <!-- Imágenes existentes (edición) -->
+        <div id="imgExistentes" style="display:none;margin-bottom:.5rem">
+          <div class="lbl" style="color:var(--tm);margin-bottom:.35rem">Imágenes actuales</div>
+          <div class="img-previews" id="imgExistList"></div>
+        </div>
+
+        <!-- Upload nuevas -->
+        <div class="img-upload-area" onclick="document.getElementById('pImagenes').click()">
+          <input type="file" id="pImagenes" name="imagenes" multiple accept=".jpg,.jpeg,.png,.webp" onchange="previsualizarImagenes(this)">
+          <i class="ti ti-cloud-upload"></i>
+          <p>Haz clic para seleccionar imágenes</p>
+          <small>JPG, PNG o WEBP — mínimo 2 — la primera será la portada</small>
+        </div>
+        <div class="img-previews" id="imgNuevasList"></div>
+        <div class="img-count" id="imgCount"></div>
+      </div>
+
+    </form>
+
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="cerrarModal('modalProducto')">Cancelar</button>
+      <button class="btn btn-gold" onclick="guardarProducto()"><i class="ti ti-device-floppy"></i> Guardar producto</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL CLIENTE ══ -->
+<div class="modal-ov" id="modalCliente">
+  <div class="modal">
+    <div class="modal-hd"><span class="modal-tt">Nuevo cliente</span><button class="btn btn-ghost btn-sm btn-icon" onclick="cerrarModal('modalCliente')"><i class="ti ti-x"></i></button></div>
+    <div class="form-grid">
+      <div class="field"><label class="lbl">Nombre *</label><input class="inp" id="cNombre" placeholder="Juan"></div>
+      <div class="field"><label class="lbl">Apellidos</label><input class="inp" id="cApellidos" placeholder="Mamani Quispe"></div>
+      <div class="field"><label class="lbl">Ciudad</label><input class="inp" id="cCiudad" placeholder="El Alto"></div>
+      <div class="field"><label class="lbl">Departamento</label>
+        <select class="inp" id="cDepto"><option>La Paz</option><option>Cochabamba</option><option>Santa Cruz</option><option>Oruro</option><option>Potosí</option><option>Sucre</option><option>Tarija</option><option>Beni</option><option>Pando</option></select>
+      </div>
+      <div class="field"><label class="lbl">WhatsApp</label><input class="inp" id="cWsp" placeholder="+591 70000000"></div>
+      <div class="field"><label class="lbl">Tipo de cliente</label>
+        <select class="inp" id="cTipo"><option value="mayorista">Mayorista</option><option value="minorista">Minorista</option></select>
+      </div>
+      <div class="field full"><label class="lbl">Dirección / Referencia</label><input class="inp" id="cDir" placeholder="Zona, calle, referencia…"></div>
+      <div class="field full"><label class="lbl">Notas internas</label><textarea class="inp" id="cNotas" placeholder="Observaciones…"></textarea></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="cerrarModal('modalCliente')">Cancelar</button>
+      <button class="btn btn-gold" onclick="guardarCliente()"><i class="ti ti-device-floppy"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL CONFIRMAR ACCIÓN ══ -->
+<div class="modal-ov" id="modalConfirm">
+  <div class="modal confirm-modal">
+    <div class="modal-hd"><span class="modal-tt" id="confirmTt">¿Confirmar?</span></div>
+    <p id="confirmMsg" style="font-size:.85rem;color:var(--tm);margin-bottom:.5rem"></p>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="cerrarModal('modalConfirm')">Cancelar</button>
+      <button class="btn btn-red" id="confirmBtn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL PEDIDO DETALLE ══ -->
+<div class="modal-ov" id="modalPedido">
+  <div class="modal">
+    <div class="modal-hd"><span class="modal-tt" id="modalPedTt">Detalle del pedido</span><button class="btn btn-ghost btn-sm btn-icon" onclick="cerrarModal('modalPedido')"><i class="ti ti-x"></i></button></div>
+    <div id="modalPedBody"></div>
+    <div class="modal-ft" id="modalPedFt"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Estado ───────────────────────────────────────────────────
+let tcActual  = 6.97;
+let PRODUCTOS = [];
+let PEDIDOS   = [];
+let CLIENTES  = [];
+let verInactivos = false;
+let imgEliminarIds = [];
+let chartsInited = false;
+
+document.getElementById('sbAv').textContent = "{{ user.nombre }}".charAt(0).toUpperCase();
+
+// ── Navegación ───────────────────────────────────────────────
+const SECS = ['dashboard','tc','productos','linkMayor','pedidos','clientes','reportes','usuarios'];
+const TTLS = {dashboard:'Dashboard',tc:'Tipo de Cambio',productos:'Productos',linkMayor:'Link Mayorista',pedidos:'Pedidos',clientes:'Clientes',reportes:'Reportes',usuarios:'Usuarios'};
+
+function goTo(sec) {
+  SECS.forEach(s => {
+    const el = document.getElementById('sec-'+s);
+    if(el) el.style.display = s===sec ? 'block' : 'none';
+    document.querySelectorAll(`[data-sec="${s}"]`).forEach(e => e.classList.remove('active'));
+  });
+  document.querySelectorAll(`[data-sec="${sec}"]`).forEach(e => e.classList.add('active'));
+  document.getElementById('pageTitle').textContent = TTLS[sec]||sec;
+  if(sec==='productos') cargarProductos();
+  if(sec==='pedidos')   cargarPedidos();
+  if(sec==='clientes')  cargarClientes();
+  if(sec==='linkMayor') cargarLinkMayor();
+  if(sec==='reportes')  initCharts();
+  if(sec==='tc')        document.getElementById('tcNuevo').value = tcActual;
+}
+
+// ── TC ───────────────────────────────────────────────────────
+async function cargarTC() {
+  try {
+    const r = await fetch('/api/tc');
+    const d = await r.json();
+    tcActual = d.tc;
+  } catch {}
+  document.getElementById('dTc').textContent = 'Bs. '+tcActual.toFixed(2);
+  document.getElementById('tcBadge').textContent = 'TC: '+tcActual.toFixed(2)+' Bs.';
+  const el = document.getElementById('tcActualVal');
+  if(el) el.textContent = tcActual.toFixed(2);
+  const prevTc = document.getElementById('prevTc');
+  if(prevTc) prevTc.textContent = tcActual.toFixed(2);
+}
+
+async function actualizarTC() {
+  const val = parseFloat(document.getElementById('tcNuevo').value);
+  if(!val||val<1){ showToast('Ingresa un valor válido','err'); return; }
+  try {
+    const r = await fetch('/api/tc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({valor:val})});
+    if(r.ok){
+      tcActual=val;
+      document.getElementById('tcActualVal').textContent=val.toFixed(2);
+      document.getElementById('dTc').textContent='Bs. '+val.toFixed(2);
+      document.getElementById('tcBadge').textContent='TC: '+val.toFixed(2)+' Bs.';
+      document.getElementById('prevTc').textContent=val.toFixed(2);
+      recalcPreview();
+      if(PRODUCTOS.length) renderTabla();
+      showToast('TC actualizado a Bs. '+val.toFixed(2),'ok');
+    }
+  } catch { showToast('Error al actualizar TC','err'); }
+}
+
+// ── PRODUCTOS ────────────────────────────────────────────────
+async function cargarProductos() {
+  try {
+    const r = await fetch('/api/productos?incluir_inactivos='+verInactivos, {credentials:'include'});
+    // Si el endpoint /api/productos no requiere admin, usamos el demo
+    PRODUCTOS = await r.json();
+  } catch {}
+  if(!PRODUCTOS.length) {
+    // fallback demo
+    PRODUCTOS = [
+      {id:1,codigo:'TT-400A',tamano:'4"',tipo:'coaxial',potencia:'200W max',descripcion:'Par coaxial 4" 2 vías.',precio_venta_mayor_usd:22,recargo_bob:80,stock_fisico:true,activo:true,cajas_en_stock:5,unidades_por_caja:6,unidad_venta:'par'},
+      {id:2,codigo:'TT-400B',tamano:'4"',tipo:'coaxial',potencia:'250W max',descripcion:'Par coaxial 4" tweeter integrado.',precio_venta_mayor_usd:28,recargo_bob:80,stock_fisico:true,activo:true,cajas_en_stock:3,unidades_por_caja:6,unidad_venta:'par'},
+      {id:3,codigo:'TT-525A',tamano:'5.25"',tipo:'coaxial',potencia:'250W max',descripcion:'Par coaxial 5.25".',precio_venta_mayor_usd:35,recargo_bob:80,stock_fisico:true,activo:true,cajas_en_stock:4,unidades_por_caja:4,unidad_venta:'par'},
+      {id:4,codigo:'TT-650A',tamano:'6.5"',tipo:'coaxial',potencia:'300W max',descripcion:'Par coaxial 6.5" el más vendido.',precio_venta_mayor_usd:48,recargo_bob:80,stock_fisico:true,activo:true,cajas_en_stock:8,unidades_por_caja:4,unidad_venta:'par'},
+      {id:5,codigo:'TT-650B',tamano:'6.5"',tipo:'coaxial',potencia:'360W max',descripcion:'Par coaxial 6.5" silk dome.',precio_venta_mayor_usd:58,recargo_bob:90,stock_fisico:true,activo:true,cajas_en_stock:6,unidades_por_caja:4,unidad_venta:'par'},
+      {id:6,codigo:'TT-650CA',tamano:'6.5"',tipo:'componente',potencia:'350W max',descripcion:'Set componentes 6.5".',precio_venta_mayor_usd:95,recargo_bob:120,stock_fisico:true,activo:true,cajas_en_stock:2,unidades_por_caja:2,unidad_venta:'set'},
+      {id:7,codigo:'TT-69A',tamano:'6x9"',tipo:'coaxial',potencia:'450W max',descripcion:'Par coaxial 6x9" 3 vías.',precio_venta_mayor_usd:65,recargo_bob:80,stock_fisico:true,activo:true,cajas_en_stock:4,unidades_por_caja:4,unidad_venta:'par'},
+      {id:8,codigo:'TT-SUB10',tamano:'10"',tipo:'bajo',potencia:'300W RMS',descripcion:'Subwoofer activo 10".',precio_venta_mayor_usd:185,recargo_bob:60,stock_fisico:true,activo:true,cajas_en_stock:3,unidades_por_caja:1,unidad_venta:'unidad'},
+      {id:9,codigo:'TT-BOX65',tamano:'6.5"',tipo:'caja',potencia:'100W max',descripcion:'Parlante en caja de madera.',precio_venta_mayor_usd:55,recargo_bob:80,stock_fisico:true,activo:true,cajas_en_stock:10,unidades_por_caja:2,unidad_venta:'unidad'},
+      {id:10,codigo:'TT-650D',tamano:'6.5"',tipo:'coaxial',potencia:'420W max',descripcion:'Par coaxial 6.5" sport.',precio_venta_mayor_usd:72,recargo_bob:80,stock_fisico:false,activo:false,cajas_en_stock:0,unidades_por_caja:4,unidad_venta:'par'},
+    ];
+  }
+  renderTabla();
+}
+
+function toggleVerInactivos() {
+  verInactivos = !verInactivos;
+  const btn = document.getElementById('btnVerInactivos');
+  btn.innerHTML = verInactivos
+    ? '<i class="ti ti-eye"></i> Ver solo activos'
+    : '<i class="ti ti-eye-off"></i> Ver ocultos';
+  cargarProductos();
+}
+
+function filtrarTabla() { renderTabla(); }
+
+function renderTabla() {
+  const search = (document.getElementById('searchProd')?.value||'').toLowerCase();
+  const fTipo  = document.getElementById('fTipo')?.value||'';
+  const fStock = document.getElementById('fStock')?.value||'';
+
+  let items = PRODUCTOS.filter(p => {
+    if(!verInactivos && !p.activo) return false;
+    if(search && !p.codigo.toLowerCase().includes(search) && !(p.descripcion||'').toLowerCase().includes(search)) return false;
+    if(fTipo && p.tipo!==fTipo) return false;
+    if(fStock==='si' && !p.stock_fisico) return false;
+    if(fStock==='no' && p.stock_fisico) return false;
+    return true;
+  });
+
+  const tbody = document.getElementById('tblProductos');
+  if(!items.length){ tbody.innerHTML='<tr><td colspan="12" style="color:var(--td);text-align:center;padding:1.5rem">Sin resultados</td></tr>'; return; }
+
+  tbody.innerHTML = items.map(p => {
+    const may = (p.precio_venta_mayor_usd * tcActual).toFixed(2);
+    const min = (p.precio_venta_mayor_usd * tcActual + p.recargo_bob).toFixed(2);
+    const bStock = p.stock_fisico
+      ? '<span class="badge b-stk"><i class="ti ti-check" style="font-size:.7rem"></i> Stock</span>'
+      : '<span class="badge b-prev">Sin stock</span>';
+    const bVis = p.activo
+      ? '<span class="badge b-conf"><i class="ti ti-eye" style="font-size:.7rem"></i> Visible</span>'
+      : '<span class="badge b-oculto"><i class="ti ti-eye-off" style="font-size:.7rem"></i> Oculto</span>';
+    const rowStyle = !p.activo ? 'opacity:.5' : '';
+    return `<tr style="${rowStyle}">
+      <td class="mono" style="color:var(--go);font-weight:500">${p.codigo}</td>
+      <td>${p.tamano}</td>
+      <td style="font-size:.75rem;color:var(--tm)">${p.tipo}</td>
+      <td style="color:var(--am);font-weight:500">$${parseFloat(p.precio_venta_mayor_usd).toFixed(2)}</td>
+      <td>
+        <input type="number" class="inp" style="width:68px;padding:3px 6px;font-size:.78rem;color:var(--am)"
+          value="${p.recargo_bob}" min="0" step="1"
+          onchange="actualizarRecargo(${p.id}, this.value)"
+          title="Recargo en Bs. para minorista">
+      </td>
+      <td style="color:var(--gl);font-weight:500">${may}</td>
+      <td style="color:var(--go)">${min}</td>
+      <td>${bStock}</td>
+      <td style="color:var(--tm);font-size:.8rem">${p.cajas_en_stock??0}</td>
+      <td style="color:var(--tm);font-size:.8rem">${p.unidades_por_caja??0}</td>
+      <td>${bVis}</td>
+      <td>
+        <div class="acciones">
+          <button class="btn btn-ghost btn-sm btn-icon" onclick="editarProducto(${p.id})" title="Editar"><i class="ti ti-edit"></i></button>
+          <button class="btn ${p.stock_fisico?'btn-amber':'btn-green'} btn-sm btn-icon" onclick="toggleStock(${p.id})" title="${p.stock_fisico?'Marcar sin stock':'Marcar en stock'}">
+            <i class="ti ti-package"></i>
+          </button>
+          <button class="btn ${p.activo?'btn-red':'btn-green'} btn-sm btn-icon" onclick="toggleVisibilidad(${p.id})" title="${p.activo?'Ocultar del catálogo':'Mostrar en catálogo'}">
+            <i class="ti ti-${p.activo?'eye-off':'eye'}"></i>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// Editar recargo inline
+async function actualizarRecargo(id, valor) {
+  const p = PRODUCTOS.find(x=>x.id===id);
+  if(p) p.recargo_bob = parseFloat(valor)||0;
+  renderTabla();
+  try {
+    await fetch('/api/productos/'+id+'/stock', {
+      method:'PATCH', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({recargo_bob: parseFloat(valor)||0})
+    });
+    showToast('Recargo actualizado','ok');
+  } catch {}
+}
+
+// Toggle stock
+async function toggleStock(id) {
+  const p = PRODUCTOS.find(x=>x.id===id); if(!p) return;
+  const nuevoStock = !p.stock_fisico;
+  p.stock_fisico = nuevoStock;
+  renderTabla();
+  showToast(nuevoStock ? 'Marcado como En stock' : 'Marcado como Sin stock (pedido previo)', nuevoStock?'ok':'warn');
+  try {
+    await fetch('/api/productos/'+id+'/stock', {method:'PATCH'});
+  } catch {}
+}
+
+// Toggle visibilidad
+function toggleVisibilidad(id) {
+  const p = PRODUCTOS.find(x=>x.id===id); if(!p) return;
+  const accion = p.activo ? 'ocultar' : 'mostrar';
+  confirmar(
+    p.activo ? 'Ocultar producto' : 'Mostrar producto',
+    `¿${p.activo?'Ocultar':'Mostrar'} el producto ${p.codigo} ${p.activo?'del catálogo':'en el catálogo'}?`,
+    async () => {
+      p.activo = !p.activo;
+      renderTabla();
+      showToast(p.activo ? 'Producto visible en catálogo' : 'Producto ocultado del catálogo', p.activo?'ok':'warn');
+      try { await fetch('/api/productos/'+id+'/visibilidad', {method:'PATCH'}); } catch {}
+    }
+  );
+}
+
+// Abrir modal nuevo producto
+function abrirModalNuevo() {
+  document.getElementById('pId').value = '';
+  document.getElementById('pCodigo').value = '';
+  document.getElementById('pPotencia').value = '';
+  document.getElementById('pDesc').value = '';
+  document.getElementById('pUsd').value = '';
+  document.getElementById('pRecargo').value = '80';
+  document.getElementById('pCajas').value = '0';
+  document.getElementById('pUdsCaja').value = '0';
+  document.getElementById('pTipo').value = 'coaxial';
+  document.getElementById('pTamano').value = '6.5"';
+  document.getElementById('pUnidad').value = 'par';
+  document.getElementById('pStock').value = 'true';
+  document.getElementById('pActivo').value = 'true';
+  document.getElementById('imgNuevasList').innerHTML = '';
+  document.getElementById('imgCount').textContent = '';
+  document.getElementById('pImagenes').value = '';
+  document.getElementById('imgExistentes').style.display = 'none';
+  imgEliminarIds = [];
+  document.getElementById('modalProdTt').textContent = 'Nuevo producto';
+  recalcPreview();
+  abrirModal('modalProducto');
+}
+
+// Editar producto
+async function editarProducto(id) {
+  const p = PRODUCTOS.find(x=>x.id===id); if(!p) return;
+  document.getElementById('pId').value        = p.id;
+  document.getElementById('pCodigo').value    = p.codigo;
+  document.getElementById('pTamano').value    = p.tamano;
+  document.getElementById('pTipo').value      = p.tipo;
+  document.getElementById('pPotencia').value  = p.potencia||'';
+  document.getElementById('pDesc').value      = p.descripcion||'';
+  document.getElementById('pUsd').value       = p.precio_venta_mayor_usd;
+  document.getElementById('pRecargo').value   = p.recargo_bob||80;
+  document.getElementById('pUnidad').value    = p.unidad_venta||'par';
+  document.getElementById('pStock').value     = p.stock_fisico ? 'true':'false';
+  document.getElementById('pActivo').value    = p.activo ? 'true':'false';
+  document.getElementById('pCajas').value     = p.cajas_en_stock||0;
+  document.getElementById('pUdsCaja').value   = p.unidades_por_caja||0;
+  document.getElementById('imgNuevasList').innerHTML = '';
+  document.getElementById('imgCount').textContent = '';
+  document.getElementById('pImagenes').value  = '';
+  imgEliminarIds = [];
+
+  // Mostrar imágenes existentes
+  const imgs = p.imagenes || [];
+  const exDiv = document.getElementById('imgExistentes');
+  const exList = document.getElementById('imgExistList');
+  if(imgs.length) {
+    exDiv.style.display = 'block';
+    exList.innerHTML = imgs.map((img,i) => `
+      <div class="img-prev-item" id="imgex-${img.id||i}">
+        <img src="${img.url||img}" alt="imagen ${i+1}">
+        ${i===0?'<span class="img-prev-portada">PORTADA</span>':''}
+        <button class="img-prev-del" onclick="marcarEliminarImg(${img.id||i}, 'imgex-${img.id||i}')"><i class="ti ti-x"></i></button>
+      </div>`).join('');
+  } else {
+    exDiv.style.display = 'none';
+  }
+
+  document.getElementById('modalProdTt').textContent = 'Editar ' + p.codigo;
+  recalcPreview();
+  abrirModal('modalProducto');
+}
+
+function marcarEliminarImg(imgId, divId) {
+  imgEliminarIds.push(imgId);
+  const el = document.getElementById(divId);
+  if(el) { el.style.opacity='.3'; el.style.filter='grayscale(1)'; }
+}
+
+function previsualizarImagenes(input) {
+  const list = document.getElementById('imgNuevasList');
+  const count = document.getElementById('imgCount');
+  list.innerHTML = '';
+  const files = Array.from(input.files);
+  files.forEach((f,i) => {
+    const url = URL.createObjectURL(f);
+    list.innerHTML += `<div class="img-prev-item">
+      <img src="${url}" alt="img ${i+1}">
+      ${i===0?'<span class="img-prev-portada">PORTADA</span>':''}
+    </div>`;
+  });
+  const total = files.length;
+  count.className = 'img-count ' + (total>=2?'ok':'err');
+  count.textContent = total>=2 ? `✓ ${total} imagen(es) seleccionada(s)` : `⚠️ ${total} imagen(es) — se requieren mínimo 2`;
+}
+
+function recalcPreview() {
+  const usd = parseFloat(document.getElementById('pUsd')?.value)||0;
+  const rec = parseFloat(document.getElementById('pRecargo')?.value)||0;
+  const may = usd * tcActual;
+  const min = may + rec;
+  const pm = document.getElementById('prevMay');
+  const pn = document.getElementById('prevMin');
+  if(pm) pm.textContent = may>0 ? 'Bs. '+may.toFixed(2) : '—';
+  if(pn) pn.textContent = min>0 ? 'Bs. '+min.toFixed(2) : '—';
+}
+
+async function guardarProducto() {
+  const id  = document.getElementById('pId').value;
+  const cod = document.getElementById('pCodigo').value.trim();
+  const usd = document.getElementById('pUsd').value;
+  if(!cod){ showToast('El código es obligatorio','err'); return; }
+  if(!usd){ showToast('El precio USD es obligatorio','err'); return; }
+
+  const files = document.getElementById('pImagenes').files;
+  const existentes = document.getElementById('imgExistList').children.length - imgEliminarIds.length;
+
+  if(!id && files.length < 2) {
+    showToast('Se requieren mínimo 2 imágenes','err'); return;
+  }
+  if(id && (files.length + existentes) < 2) {
+    showToast('El producto debe tener mínimo 2 imágenes','err'); return;
+  }
+
+  const fd = new FormData();
+  fd.append('codigo',   cod);
+  fd.append('descripcion', document.getElementById('pDesc').value);
+  fd.append('tamano',   document.getElementById('pTamano').value);
+  fd.append('tipo',     document.getElementById('pTipo').value);
+  fd.append('potencia', document.getElementById('pPotencia').value);
+  fd.append('precio_venta_mayor_usd', usd);
+  fd.append('recargo_bob',    document.getElementById('pRecargo').value);
+  fd.append('unidad_venta',   document.getElementById('pUnidad').value);
+  fd.append('stock_fisico',   document.getElementById('pStock').value);
+  fd.append('cajas_en_stock', document.getElementById('pCajas').value);
+  fd.append('unidades_por_caja', document.getElementById('pUdsCaja').value);
+  fd.append('marca_id', '1');
+  fd.append('categoria_id', '1');
+  if(id) fd.append('imagenes_eliminar', JSON.stringify(imgEliminarIds));
+
+  for(const f of files) fd.append('imagenes', f);
+
+  try {
+    const url    = id ? `/api/productos/${id}` : '/api/productos';
+    const method = id ? 'PUT' : 'POST';
+    const r = await fetch(url, {method, body: fd, credentials:'include'});
+    const data = await r.json();
+    if(r.ok && data.ok) {
+      showToast(id ? 'Producto actualizado' : 'Producto creado', 'ok');
+      cerrarModal('modalProducto');
+      await cargarProductos();
+    } else {
+      showToast('Error: '+(data.detail||'sin detalles'),'err');
+    }
+  } catch(e) {
+    // En modo demo, simular éxito
+    showToast(id ? 'Producto actualizado (demo)' : 'Producto guardado (demo — conecta BD para persistir)', 'ok');
+    cerrarModal('modalProducto');
+  }
+}
+
+// ── PEDIDOS ──────────────────────────────────────────────────
+async function cargarPedidos() {
+  try {
+    const r = await fetch('/api/pedidos', {credentials:'include'});
+    PEDIDOS = await r.json();
+    renderPedidos();
+  } catch {
+    document.getElementById('tblPedidos').innerHTML =
+      '<tr><td colspan="9" style="color:var(--td);text-align:center;padding:1.5rem">Sin pedidos en modo demo</td></tr>';
+  }
+}
+
+function filtrarPedidos() { renderPedidos(); }
+
+function renderPedidos() {
+  const fE = document.getElementById('fEstado')?.value||'';
+  const fT = document.getElementById('fTipoPed')?.value||'';
+  let items = PEDIDOS.filter(p => {
+    if(fE && p.estado!==fE) return false;
+    if(fT && p.tipo!==fT) return false;
+    return true;
+  });
+  const tbody = document.getElementById('tblPedidos');
+  if(!items.length){ tbody.innerHTML='<tr><td colspan="9" style="color:var(--td);text-align:center;padding:1.5rem">Sin pedidos</td></tr>'; return; }
+  tbody.innerHTML = items.map(p => {
+    const bc = {pendiente:'b-pend',confirmado:'b-conf',enviado:'b-envi',cancelado:'b-canc'}[p.estado]||'b-pend';
+    const fecha = p.fecha ? new Date(p.fecha).toLocaleDateString('es-BO') : '—';
+    return `<tr>
+      <td class="mono" style="color:var(--go)">#${p.id}</td>
+      <td style="font-size:.75rem">${fecha}</td>
+      <td>${p.cliente||'Anónimo'}</td>
+      <td><span class="badge ${p.tipo==='mayorista'?'b-conf':'b-pend'}">${p.tipo}</span></td>
+      <td class="mono">${p.tc_usado||'—'}</td>
+      <td style="color:var(--gl);font-weight:500">${p.total_bob?.toFixed(2)||'—'}</td>
+      <td style="color:var(--am)">$${p.total_usd?.toFixed(2)||'—'}</td>
+      <td><span class="badge ${bc}">${p.estado}</span></td>
+      <td><div class="acciones">
+        <button class="btn btn-ghost btn-sm btn-icon" onclick="verPedido(${p.id})" title="Ver detalle"><i class="ti ti-eye"></i></button>
+        ${p.estado==='pendiente'?`<button class="btn btn-green btn-sm" onclick="confirmarPedido(${p.id})"><i class="ti ti-check"></i> Confirmar</button>`:''}
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function verPedido(id) {
+  const p = PEDIDOS.find(x=>x.id===id)||{id};
+  document.getElementById('modalPedTt').textContent = 'Pedido #'+id;
+  document.getElementById('modalPedBody').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;font-size:.82rem;margin-bottom:1rem">
+      <div><span style="color:var(--td)">Cliente:</span> <strong>${p.cliente||'Anónimo'}</strong></div>
+      <div><span style="color:var(--td)">Tipo:</span> <strong>${p.tipo||'—'}</strong></div>
+      <div><span style="color:var(--td)">TC usado:</span> <strong>${p.tc_usado||'—'} Bs.</strong></div>
+      <div><span style="color:var(--td)">Estado:</span> <strong>${p.estado||'—'}</strong></div>
+      <div><span style="color:var(--td)">Total Bs.:</span> <strong style="color:var(--gl)">${p.total_bob?.toFixed(2)||'—'}</strong></div>
+      <div><span style="color:var(--td)">Total USD:</span> <strong style="color:var(--am)">$${p.total_usd?.toFixed(2)||'—'}</strong></div>
+    </div>
+    <p style="font-size:.75rem;color:var(--td);text-align:center;padding:1rem">Detalle de líneas disponible con BD conectada.</p>`;
+  document.getElementById('modalPedFt').innerHTML = p.estado==='pendiente'
+    ? `<button class="btn btn-ghost" onclick="cerrarModal('modalPedido')">Cerrar</button><button class="btn btn-green" onclick="confirmarPedido(${id});cerrarModal('modalPedido')"><i class="ti ti-check"></i> Confirmar venta</button>`
+    : `<button class="btn btn-ghost" onclick="cerrarModal('modalPedido')">Cerrar</button>`;
+  abrirModal('modalPedido');
+}
+
+async function confirmarPedido(id) {
+  try {
+    await fetch('/api/pedidos/'+id+'/confirmar',{method:'POST',credentials:'include'});
+    const p = PEDIDOS.find(x=>x.id===id);
+    if(p) p.estado='confirmado';
+    renderPedidos();
+    showToast('Pedido #'+id+' confirmado','ok');
+  } catch { showToast('Error al confirmar','err'); }
+}
+
+// ── CLIENTES ─────────────────────────────────────────────────
+async function cargarClientes() {
+  try {
+    const r = await fetch('/api/clientes',{credentials:'include'});
+    CLIENTES = await r.json();
+    renderClientes();
+  } catch {
+    document.getElementById('tblClientes').innerHTML =
+      '<tr><td colspan="7" style="color:var(--td);text-align:center;padding:1.5rem">Sin clientes en modo demo</td></tr>';
+  }
+}
+
+function filtrarClientes(){ renderClientes(); }
+
+function renderClientes(){
+  const search = (document.getElementById('searchCli')?.value||'').toLowerCase();
+  const depto  = document.getElementById('fDepto')?.value||'';
+  const tipo   = document.getElementById('fTipoCli')?.value||'';
+  let items = CLIENTES.filter(c=>{
+    const nombre=((c.nombre||'')+' '+(c.apellidos||'')).toLowerCase();
+    if(search && !nombre.includes(search)) return false;
+    if(depto && c.departamento!==depto) return false;
+    if(tipo && c.tipo_cliente!==tipo) return false;
+    return true;
+  });
+  const tbody = document.getElementById('tblClientes');
+  if(!items.length){ tbody.innerHTML='<tr><td colspan="7" style="color:var(--td);text-align:center;padding:1.5rem">Sin clientes</td></tr>'; return; }
+  tbody.innerHTML = items.map(c=>`<tr>
+    <td>${c.nombre||''} ${c.apellidos||''}</td>
+    <td style="font-size:.75rem">${c.departamento||'—'} · ${c.ciudad||''}</td>
+    <td class="mono">${c.whatsapp||'—'}</td>
+    <td><span class="badge ${c.tipo_cliente==='mayorista'?'b-conf':'b-pend'}">${c.tipo_cliente}</span></td>
+    <td>${c.tiene_acceso_mayor?'<span class="badge b-conf">Sí</span>':'<span class="badge b-inact">No</span>'}</td>
+    <td style="font-size:.75rem">${c.ultimo_pedido||'—'}</td>
+    <td><div class="acciones">
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="abrirWA('${c.whatsapp||''}')" title="WhatsApp"><i class="ti ti-brand-whatsapp"></i></button>
+    </div></td>
+  </tr>`).join('');
+}
+
+async function guardarCliente(){
+  showToast('Cliente guardado (requiere BD)','ok');
+  cerrarModal('modalCliente');
+}
+
+function abrirWA(num){
+  if(!num){ showToast('Sin número','err'); return; }
+  window.open('https://wa.me/'+num.replace(/\D/g,''),'_blank');
+}
+
+// ── LINK MAYORISTA ────────────────────────────────────────────
+async function cargarLinkMayor(){
+  try {
+    const r = await fetch('/mayor-url',{credentials:'include'});
+    const d = await r.json();
+    document.getElementById('linkMayorUrl').textContent = d.url;
+    document.getElementById('linkMayorWA').href = `https://wa.me/?text=${encodeURIComponent('Hola! Te comparto el catálogo mayorista de TITANIUM STORE: '+d.url)}`;
+  } catch {
+    document.getElementById('linkMayorUrl').textContent = window.location.origin+'/mayor/[token]';
+  }
+}
+
+function copiarLink(){
+  const url = document.getElementById('linkMayorUrl').textContent;
+  navigator.clipboard.writeText(url).then(()=>showToast('Link copiado','ok')).catch(()=>showToast('Error al copiar','err'));
+}
+
+// ── CHARTS ───────────────────────────────────────────────────
+function initCharts(){
+  if(chartsInited) return; chartsInited=true;
+  const base = {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5c5a56',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#5c5a56',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'}}}};
+  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  function grad(ctx){const g=ctx.createLinearGradient(0,0,0,200);g.addColorStop(0,'rgba(201,169,110,.35)');g.addColorStop(1,'rgba(201,169,110,.02)');return g;}
+  const c1=document.getElementById('chartVentas')?.getContext('2d');
+  if(c1) new Chart(c1,{type:'line',data:{labels:meses.slice(0,6),datasets:[{data:[0,0,0,0,0,0],borderColor:'#c9a96e',borderWidth:2,pointRadius:3,pointBackgroundColor:'#c9a96e',fill:true,backgroundColor:grad(c1),tension:.4}]},options:{...base}});
+  const c2=document.getElementById('chartTop')?.getContext('2d');
+  if(c2) new Chart(c2,{type:'bar',data:{labels:['TT-650A','TT-69A','TT-650CA','TT-SUB10','TT-BOX65'],datasets:[{data:[0,0,0,0,0],backgroundColor:'rgba(201,169,110,.6)',borderColor:'#c9a96e',borderWidth:1}]},options:base});
+  const c3=document.getElementById('chartDepto')?.getContext('2d');
+  if(c3) new Chart(c3,{type:'doughnut',data:{labels:['La Paz','Cbba','Oruro','Otros'],datasets:[{data:[0,0,0,0],backgroundColor:['#c9a96e','#5b9cf6','#4caf7d','#e8a838'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'right',labels:{color:'#9a9790',font:{size:10},boxWidth:10}}}}});
+  const c4=document.getElementById('chartMensual')?.getContext('2d');
+  if(c4) new Chart(c4,{type:'bar',data:{labels:meses,datasets:[{label:'Mayorista',data:Array(12).fill(0),backgroundColor:'rgba(91,156,246,.5)',borderColor:'#5b9cf6',borderWidth:1},{label:'Minorista',data:Array(12).fill(0),backgroundColor:'rgba(201,169,110,.4)',borderColor:'#c9a96e',borderWidth:1}]},options:{...base,plugins:{legend:{display:true,labels:{color:'#9a9790',font:{size:10},boxWidth:10}}}}});
+}
+
+function exportarCSV(){
+  const rows=[['ID','Fecha','Cliente','Tipo','TC','Total BOB','Total USD','Estado']];
+  PEDIDOS.forEach(p=>rows.push([p.id,p.fecha||'',p.cliente||'',p.tipo,p.tc_usado,p.total_bob,p.total_usd,p.estado]));
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='ventas_titanium.csv'; a.click();
+}
+
+// ── MODAL UTILS ───────────────────────────────────────────────
+function abrirModal(id){ document.getElementById(id).classList.add('open'); }
+function cerrarModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-ov').forEach(ov=>ov.addEventListener('click',e=>{if(e.target===ov) ov.classList.remove('open');}));
+
+function confirmar(titulo, msg, callback){
+  document.getElementById('confirmTt').textContent = titulo;
+  document.getElementById('confirmMsg').textContent = msg;
+  const btn = document.getElementById('confirmBtn');
+  btn.onclick = ()=>{ callback(); cerrarModal('modalConfirm'); };
+  abrirModal('modalConfirm');
+}
+
+function abrirCambiarPass(u){
+  showToast('Edita la contraseña de '+u+' en app/auth.py','warn');
+}
+
+// ── TOAST ────────────────────────────────────────────────────
+function showToast(msg, type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast'+(type?' '+type:'');
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+(async()=>{
+  await cargarTC();
+  initCharts();
+})();
+</script>
+</body>
+</html>

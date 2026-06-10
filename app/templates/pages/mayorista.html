@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TITANIUM STORE — Precios por Mayor</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#07080a;--bg2:#0d0f12;--bg3:#141618;--bg4:#1a1c20;--sf:#20232a;--bo:rgba(180,210,255,0.08);--bo2:rgba(180,210,255,0.15);--ac:#5b9cf6;--al:#93bbf9;--ad:rgba(91,156,246,0.15);--ag:rgba(91,156,246,0.07);--tx:#eaecf0;--tm:#8e9aaa;--td:#4d5566;--gr:#4caf7d;--grd:rgba(76,175,125,0.12);--am:#e8a838;--amd:rgba(232,168,56,0.12);--rd:#e05c5c;--fd:'Cormorant Garamond',Georgia,serif;--fb:'DM Sans',system-ui,sans-serif;--r:10px;--rl:16px;--tr:0.2s cubic-bezier(0.4,0,0.2,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:var(--fb);font-weight:400;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--sf);border-radius:3px}
+.nav{position:sticky;top:0;z-index:100;background:rgba(7,8,10,0.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--bo);padding:0 1.5rem;height:62px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-ic{width:34px;height:34px;background:linear-gradient(135deg,var(--ac),#1a4fa0);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff}
+.nav-brand{font-family:var(--fd);font-size:1.25rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--al)}
+.nav-badge{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;background:var(--ad);color:var(--ac);border:1px solid rgba(91,156,246,.25);border-radius:20px;padding:2px 10px}
+.nav-r{display:flex;align-items:center;gap:1rem}
+.btn-cart{position:relative;background:none;border:1px solid var(--bo2);border-radius:var(--r);color:var(--tx);padding:6px 14px;cursor:pointer;font-family:var(--fb);font-size:.82rem;display:flex;align-items:center;gap:6px;transition:var(--tr)}
+.btn-cart:hover{border-color:var(--ac);color:var(--ac)}
+.btn-cart.has-items{border-color:var(--ac);color:var(--ac);background:var(--ad)}
+.btn-cart.bump{animation:cartBump .35s cubic-bezier(.36,.07,.19,.97) both}
+.cart-n{position:absolute;top:-6px;right:-6px;background:var(--ac);color:#fff;font-size:.6rem;font-weight:600;width:17px;height:17px;border-radius:50%;display:none;align-items:center;justify-content:center}
+.cart-n.pulse{animation:badgePulse .5s ease both}
+@keyframes cartBump{0%{transform:scale(1)}30%{transform:scale(1.12)}60%{transform:scale(.96)}100%{transform:scale(1)}}
+@keyframes badgePulse{0%{transform:scale(0.6);opacity:0}60%{transform:scale(1.25)}100%{transform:scale(1);opacity:1}}
+.hero{position:relative;padding:4rem 1.5rem 2.5rem;text-align:center;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(91,156,246,0.08) 0%,transparent 70%);pointer-events:none}
+.hero-ey{display:inline-block;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ac);border:1px solid var(--ad);border-radius:20px;padding:4px 16px;margin-bottom:1.5rem}
+.hero h1{font-family:var(--fd);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:300;color:var(--tx);margin-bottom:.75rem;line-height:1.15}
+.hero h1 em{font-style:italic;color:var(--al)}
+.hero p{color:var(--tm);font-size:.92rem;max-width:480px;margin:0 auto}
+/* Info box */
+.info-strip{margin:0 1.5rem 2rem;background:var(--bg3);border:1px solid var(--bo);border-radius:var(--rl);padding:1rem 1.5rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
+.info-item{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--tm)}
+.info-item i{color:var(--ac);font-size:1rem}
+.info-sep{width:1px;height:20px;background:var(--bo);flex-shrink:0}
+/* Filtros y grid igual que minorista pero con acento azul */
+.filters{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;padding:0 1.5rem 2rem}
+.fb{background:var(--bg3);border:1px solid var(--bo);border-radius:30px;color:var(--tm);padding:5px 17px;font-family:var(--fb);font-size:.8rem;cursor:pointer;transition:var(--tr)}
+.fb:hover{border-color:var(--bo2);color:var(--tx)}
+.fb.on{background:var(--ad);border-color:var(--ac);color:var(--al)}
+.sec{padding:0 1.5rem 3rem}
+.sec-hd{display:flex;align-items:baseline;gap:.75rem;margin-bottom:1.25rem;padding-bottom:.6rem;border-bottom:1px solid var(--bo)}
+.sec-tt{font-family:var(--fd);font-size:1rem;font-weight:400;color:var(--tm);letter-spacing:.07em;text-transform:uppercase}
+.sec-ct{font-size:.72rem;color:var(--td)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1px;background:var(--bo);border:1px solid var(--bo);border-radius:var(--rl);overflow:hidden}
+.card{background:var(--bg2);padding:1.4rem;display:flex;flex-direction:column;gap:.9rem;transition:background var(--tr);position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top left,var(--ag),transparent 60%);opacity:0;transition:opacity var(--tr);pointer-events:none}
+.card:hover{background:var(--bg3)}.card:hover::after{opacity:1}
+.c-img{aspect-ratio:4/3;background:var(--bg3);border-radius:var(--r);display:flex;align-items:center;justify-content:center;position:relative;border:1px solid var(--bo);overflow:hidden}
+.c-img i{font-size:2.8rem;color:var(--td)}
+.b-stk{position:absolute;top:8px;left:8px;font-size:.62rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 9px;border-radius:20px}
+.b-stk.yes{background:var(--grd);color:var(--gr);border:1px solid rgba(76,175,125,.22)}
+.b-stk.no{background:var(--amd);color:var(--am);border:1px solid rgba(232,168,56,.22)}
+.b-tipo{position:absolute;top:8px;right:8px;font-size:.58rem;letter-spacing:.05em;padding:2px 7px;border-radius:20px;background:rgba(255,255,255,.05);color:var(--td);border:1px solid var(--bo);text-transform:uppercase}
+.c-body{flex:1;display:flex;flex-direction:column;gap:5px}
+.c-cod{font-size:.68rem;color:var(--ac);letter-spacing:.12em;text-transform:uppercase;font-weight:500}
+.c-nam{font-family:var(--fd);font-size:1.05rem;color:var(--tx);line-height:1.3}
+.c-spec{font-size:.76rem;color:var(--td)}
+.c-desc{font-size:.78rem;color:var(--tm);line-height:1.45;margin-top:2px}
+.c-price{margin-top:auto;padding-top:.7rem;border-top:1px solid var(--bo)}
+.p-lbl{font-size:.65rem;color:var(--td);letter-spacing:.07em;text-transform:uppercase;margin-bottom:1px}
+.p-bob{font-family:var(--fd);font-size:1.55rem;font-weight:600;color:var(--al);line-height:1}
+.p-usd{font-size:.72rem;color:var(--td);margin-top:2px}
+.p-unit{font-size:.7rem;color:var(--td)}
+.c-act{display:flex;gap:7px;align-items:center;margin-top:.7rem}
+.qty{display:flex;align-items:center;background:var(--bg4);border:1px solid var(--bo);border-radius:var(--r);overflow:hidden}
+.qb{background:none;border:none;color:var(--tm);width:28px;height:28px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:var(--tr)}
+.qb:hover{color:var(--ac);background:var(--ad)}
+.qn{width:26px;text-align:center;font-size:.88rem;font-weight:500;color:var(--tx);border-left:1px solid var(--bo);border-right:1px solid var(--bo);height:28px;display:flex;align-items:center;justify-content:center}
+.btn-add{flex:1;background:var(--ad);border:1px solid var(--ac);border-radius:var(--r);color:var(--al);font-family:var(--fb);font-size:.78rem;font-weight:500;padding:5px 10px;cursor:pointer;transition:var(--tr)}
+.btn-add:hover{background:var(--ac);color:#fff}
+.btn-add.pre{border-color:var(--am);color:var(--am);background:var(--amd)}
+.btn-add.pre:hover{background:var(--am);color:var(--bg)}
+/* Drawer */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s}
+.ov.open{opacity:1;pointer-events:all}
+.drw{position:fixed;top:0;right:0;width:min(420px,95vw);height:100vh;background:var(--bg2);border-left:1px solid var(--bo);z-index:201;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
+.drw.open{transform:translateX(0)}
+.drw-hd{padding:1.2rem 1.5rem;border-bottom:1px solid var(--bo);display:flex;align-items:center;justify-content:space-between}
+.drw-tt{font-family:var(--fd);font-size:1.25rem;font-weight:300;letter-spacing:.04em}
+.btn-x{background:none;border:1px solid var(--bo);border-radius:var(--r);color:var(--tm);width:32px;height:32px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:var(--tr)}
+.btn-x:hover{border-color:var(--bo2);color:var(--tx)}
+.drw-items{flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:.65rem}
+.di{background:var(--bg3);border:1px solid var(--bo);border-radius:var(--r);padding:.8rem 1rem;display:flex;gap:.75rem;align-items:flex-start}
+.di-info{flex:1}
+.di-cod{font-size:.63rem;color:var(--ac);letter-spacing:.1em;text-transform:uppercase}
+.di-nam{font-size:.85rem;color:var(--tx);margin:2px 0 5px;line-height:1.3}
+.di-qty{font-size:.73rem;color:var(--tm)}
+.di-p{font-family:var(--fd);font-size:1rem;color:var(--al);margin-top:3px}
+.di-del{background:none;border:none;color:var(--td);cursor:pointer;font-size:.95rem;padding:2px;transition:var(--tr)}
+.di-del:hover{color:var(--rd)}
+.drw-ft{padding:1.2rem 1.5rem;border-top:1px solid var(--bo);display:flex;flex-direction:column;gap:.7rem}
+.tot-row{display:flex;justify-content:space-between;font-size:.8rem;color:var(--tm)}
+.tot-main{display:flex;justify-content:space-between;align-items:baseline}
+.tot-lbl{font-family:var(--fd);font-size:.95rem;color:var(--tx)}
+.tot-amt{font-family:var(--fd);font-size:1.75rem;font-weight:600;color:var(--al)}
+.tc-note{font-size:.67rem;color:var(--td);text-align:right}
+.btn-wa{display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;border:none;border-radius:var(--r);color:#fff;font-family:var(--fb);font-size:.88rem;font-weight:600;padding:12px;cursor:pointer;transition:var(--tr)}
+.btn-wa:hover{background:#1da851;transform:translateY(-1px)}
+.empty-cart{text-align:center;padding:3rem 1rem;color:var(--td)}
+.empty-cart i{font-size:2.2rem;display:block;margin-bottom:.75rem}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--sf);border:1px solid var(--bo2);border-radius:var(--r);padding:9px 20px;font-size:.83rem;color:var(--tx);z-index:300;transition:transform .3s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+footer{border-top:1px solid var(--bo);padding:1.75rem 1.5rem;text-align:center;font-size:.76rem;color:var(--td)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:fadeUp .4s ease both}
+.card:nth-child(1){animation-delay:.04s}.card:nth-child(2){animation-delay:.08s}.card:nth-child(3){animation-delay:.12s}.card:nth-child(4){animation-delay:.16s}.card:nth-child(5){animation-delay:.2s}.card:nth-child(6){animation-delay:.24s}
+@media(max-width:640px){.nav-badge{display:none}.hero{padding:3rem 1rem 2rem}.info-sep{display:none}.grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a class="nav-logo" href="#"><div class="nav-ic"><i class="ti ti-speakerphone"></i></div><div><div class="nav-brand">Titanium Store</div></div></a>
+  <div class="hero-ey"><i class="ti ti-lock" style="font-size:.9em"></i> Lista exclusiva mayoristas</div>
+  <div class="nav-r">
+    <button class="btn-cart" onclick="toggleCart()"><i class="ti ti-shopping-cart"></i><span>Pedido</span><span class="cart-n" id="cartN">0</span></button>
+  </div>
+</nav>
+<section class="hero">
+  <h1>Precios por <em>mayor</em></h1>
+  <p>Acceso exclusivo para distribuidores de TITANIUM STORE.</p>
+</section>
+<div class="info-strip">
+  <div class="info-item"><i class="ti ti-package"></i><span>Consulta Rápida</span></div>
+  <div class="info-sep"></div>
+  <div class="info-item"><i class="ti ti-truck"></i><span>Envío a todo Bolivia</span></div>
+  <div class="info-sep"></div>
+  <div class="info-item"><i class="ti ti-currency-dollar"></i><span>Precios en USD · pago en Bs. al TC del día</span></div>
+  <div class="info-sep"></div>
+  <div class="info-item"><i class="ti ti-clock"></i><span>Pedidos de otras MARCAS por encargo 5–7 días</span></div>
+</div>
+<div class="filters">
+  <button class="fb on" data-f="all">Todos</button>
+  <button class="fb" data-f='4"'>4"</button>
+  <button class="fb" data-f='5.25"'>5.25"</button>
+  <button class="fb" data-f='6.5"'>6.5"</button>
+  <button class="fb" data-f='6x9"'>6×9"</button>
+  <button class="fb" data-f="bajo">Bajo activo</button>
+  <button class="fb" data-f="caja">En caja</button>
+</div>
+<div id="mainContent"></div>
+<div class="ov" id="ov" onclick="toggleCart()"></div>
+<div class="drw" id="drw">
+  <div class="drw-hd"><span class="drw-tt">Tu pedido mayorista</span><button class="btn-x" onclick="toggleCart()"><i class="ti ti-x"></i></button></div>
+  <div class="drw-items" id="cartItems"></div>
+  <div class="drw-ft" id="cartFt"><div class="empty-cart"><i class="ti ti-shopping-cart-off"></i><p>Tu pedido está vacío</p></div></div>
+</div>
+<div class="toast" id="toast"></div>
+<footer><p>© 2025 TITANIUM STORE · Lista mayorista — uso exclusivo</p></footer>
+<script>
+const PRODS = {{ productos | tojson }};
+const WA    = "{{ wa_number }}";
+
+// TC fijo desde el servidor — solo el admin lo modifica
+let tc = parseFloat("{{ tc }}") || 6.97;
+let cart = {}, filter = 'all';
+const iconMap = {coaxial:'ti-speakerphone',componente:'ti-adjustments',caja:'ti-home',bajo:'ti-speakerphone'};
+document.querySelectorAll('.fb').forEach(b => b.addEventListener('click', ()=>{
+  filter=b.dataset.f;
+  document.querySelectorAll('.fb').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); render();
+}));
+function fmt(n){ return 'Bs. '+parseFloat(n).toLocaleString('es-BO',{minimumFractionDigits:2}); }
+function fmtUsd(n){ return 'USD '+parseFloat(n).toFixed(2); }
+function precioMay(p){ return p.precio_venta_mayor_usd * tc; }
+function render(){
+  let items=PRODS;
+  if(filter==='bajo') items=items.filter(p=>p.tipo==='bajo');
+  else if(filter==='caja') items=items.filter(p=>p.tipo==='caja');
+  else if(filter!=='all') items=items.filter(p=>p.tamano===filter);
+  const stk=items.filter(p=>p.stock_fisico), pre=items.filter(p=>!p.stock_fisico);
+  let html='';
+  if(stk.length) html+=sec('En stock',stk);
+  if(pre.length) html+=sec('Pedido previo — 3 a 5 días',pre);
+  document.getElementById('mainContent').innerHTML=html;
+}
+function sec(t,items){ return `<div class="sec"><div class="sec-hd"><span class="sec-tt">${t}</span><span class="sec-ct">${items.length} producto(s)</span></div><div class="grid">${items.map(card).join('')}</div></div>`; }
+function card(p){
+  const q=cart[p.id]?.qty||0, ic=iconMap[p.tipo]||'ti-speakerphone';
+  return `<div class="card">
+    <div class="c-img"><i class="ti ${ic}"></i><span class="b-stk ${p.stock_fisico?'yes':'no'}">${p.stock_fisico?'En stock':'Pedido previo'}</span><span class="b-tipo">${p.tipo}</span></div>
+    <div class="c-body"><div class="c-cod">${p.codigo}</div><div class="c-nam">${p.marca} ${p.codigo}</div><div class="c-spec">${p.tamano} · ${p.potencia}</div><div class="c-desc">${p.descripcion}</div></div>
+    <div class="c-price"><div class="p-lbl">Precio por ${p.unidad_venta}</div><div class="p-bob" id="pb-${p.id}">${fmt(precioMay(p))}</div><div class="p-usd">${fmtUsd(p.precio_venta_mayor_usd)} / ${p.unidad_venta}</div></div>
+    <div class="c-act">
+      <div class="qty"><button class="qb" onclick="chg(${p.id},-1)">−</button><span class="qn" id="qn-${p.id}">${q}</span><button class="qb" onclick="chg(${p.id},1)">+</button></div>
+      <button class="btn-add ${p.stock_fisico?'':'pre'}" onclick="chg(${p.id},1)">${p.stock_fisico?'Agregar':'Reservar'}</button>
+    </div>
+  </div>`;
+}
+function chg(id,d){
+  const p=PRODS.find(x=>x.id===id);
+  if(!cart[id]) cart[id]={product:p,qty:0};
+  cart[id].qty=Math.max(0,cart[id].qty+d);
+  if(cart[id].qty===0) delete cart[id];
+  const el=document.getElementById('qn-'+id); if(el) el.textContent=cart[id]?.qty||0;
+  if(d>0) showToast('Producto agregado');
+  updateCart();
+}
+function updateCart(){
+  const items=Object.values(cart);
+  const totalBob=items.reduce((s,x)=>s+precioMay(x.product)*x.qty,0);
+  const totalUsd=items.reduce((s,x)=>s+x.product.precio_venta_mayor_usd*x.qty,0);
+  const units=items.reduce((s,x)=>s+x.qty,0);
+  const n=document.getElementById('cartN');
+  const btn=document.querySelector('.btn-cart');
+  const prev=parseInt(n.textContent)||0;
+  n.textContent=units;
+  if(units>0){
+    n.style.display='flex';
+    btn.classList.add('has-items');
+    if(units>prev){
+      btn.classList.remove('bump'); void btn.offsetWidth;
+      btn.classList.add('bump');
+      n.classList.remove('pulse'); void n.offsetWidth;
+      n.classList.add('pulse');
+    }
+  } else {
+    n.style.display='none';
+    btn.classList.remove('has-items');
+  }
+  if(!items.length){ document.getElementById('cartItems').innerHTML=''; document.getElementById('cartFt').innerHTML='<div class="empty-cart"><i class="ti ti-shopping-cart-off"></i><p>Tu pedido está vacío</p></div>'; return; }
+  document.getElementById('cartItems').innerHTML=items.map(x=>{
+    const p=precioMay(x.product);
+    return `<div class="di"><div class="di-info"><div class="di-cod">${x.product.codigo}</div><div class="di-nam">${x.product.marca} ${x.product.codigo}</div><div class="di-qty">${x.qty} ${x.product.unidad_venta}(s) × ${fmt(p)}</div><div class="di-p">${fmt(p*x.qty)}</div></div><button class="di-del" onclick="chg(${x.product.id},-${x.qty})"><i class="ti ti-trash"></i></button></div>`;
+  }).join('');
+  const pre=items.filter(x=>!x.product.stock_fisico);
+  document.getElementById('cartFt').innerHTML=`${pre.length?`<div style="font-size:.7rem;color:var(--am);padding:4px 0">⚠️ ${pre.length} producto(s) son pedido previo (3–5 días)</div>`:''}<div class="tot-row"><span>Total USD</span><span>${fmtUsd(totalUsd)}</span></div><div class="tot-main"><span class="tot-lbl">Total Bs.</span><span class="tot-amt">${fmt(totalBob)}</span></div><button class="btn-wa" onclick="sendWA()"><i class="ti ti-brand-whatsapp"></i> Enviar pedido por WhatsApp</button>`;
+}
+function sendWA(){
+  const items=Object.values(cart); if(!items.length) return;
+  const totalBob=items.reduce((s,x)=>s+precioMay(x.product)*x.qty,0);
+  const totalUsd=items.reduce((s,x)=>s+x.product.precio_venta_mayor_usd*x.qty,0);
+  let msg='🔊 *Pedido MAYORISTA — TITANIUM STORE*\n\n';
+  items.forEach(x=>{const p=precioMay(x.product); msg+=`• ${x.product.codigo} × ${x.qty} ${x.product.unidad_venta}(s) = ${fmt(p*x.qty)} (${fmtUsd(x.product.precio_venta_mayor_usd*x.qty)})\n`;});
+  msg+=`\n*Total: ${fmt(totalBob)}* (${fmtUsd(totalUsd)})\n_TC: 1 USD = ${tc.toFixed(2)} Bs._`;
+  window.open(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+function toggleCart(){ document.getElementById('ov').classList.toggle('open'); document.getElementById('drw').classList.toggle('open'); }
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+render(); updateCart();
+</script>
+</body>
+</html>
