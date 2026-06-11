@@ -215,7 +215,7 @@ textarea.inp{resize:vertical;min-height:68px}
     <a class="nav-item" data-sec="reportes" onclick="goTo('reportes')"><i class="ti ti-chart-bar"></i>Reportes</a>
     <div class="sb-section">Sistema</div>
     <a class="nav-item" data-sec="usuarios" onclick="goTo('usuarios')"><i class="ti ti-user-cog"></i>Usuarios</a>
-    <a class="nav-item" href="/catalogo" target="_blank"><i class="ti ti-external-link"></i>Ver tienda</a>
+    <a class="nav-item" href="/tienda/catalogo" target="_blank"><i class="ti ti-external-link"></i>Ver tienda</a>
   </nav>
   <div class="sb-footer">
     <a class="btn-salir" href="/admin/salir"><i class="ti ti-logout"></i> Cerrar sesión</a>
@@ -621,10 +621,13 @@ function goTo(sec) {
 // ── TC ───────────────────────────────────────────────────────
 async function cargarTC() {
   try {
-    const r = await fetch('/api/tc');
+    const r = await fetch('/tienda/api/tc');
     const d = await r.json();
     tcActual = d.tc;
-  } catch {}
+  } catch(e) {
+    console.error('Error cargando TC:', e);
+    tcActual = 6.97;
+  }
   document.getElementById('dTc').textContent = 'Bs. '+tcActual.toFixed(2);
   document.getElementById('tcBadge').textContent = 'TC: '+tcActual.toFixed(2)+' Bs.';
   const el = document.getElementById('tcActualVal');
@@ -637,7 +640,7 @@ async function actualizarTC() {
   const val = parseFloat(document.getElementById('tcNuevo').value);
   if(!val||val<1){ showToast('Ingresa un valor válido','err'); return; }
   try {
-    const r = await fetch('/api/tc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({valor:val})});
+    const r = await fetch('/tienda/api/tc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({valor:val})});
     if(r.ok){
       tcActual=val;
       document.getElementById('tcActualVal').textContent=val.toFixed(2);
@@ -647,14 +650,19 @@ async function actualizarTC() {
       recalcPreview();
       if(PRODUCTOS.length) renderTabla();
       showToast('TC actualizado a Bs. '+val.toFixed(2),'ok');
+    } else {
+      const error = await r.text();
+      showToast('Error: '+error,'err');
     }
-  } catch { showToast('Error al actualizar TC','err'); }
+  } catch(e) { 
+    showToast('Error al actualizar TC: '+e.message,'err'); 
+  }
 }
 
 // ── PRODUCTOS ────────────────────────────────────────────────
 async function cargarProductos() {
   try {
-    const r = await fetch('/api/productos?incluir_inactivos='+verInactivos, {credentials:'include'});
+    const r = await fetch('/tienda/api/productos?incluir_inactivos='+verInactivos, {credentials:'include'});
     // Si el endpoint /api/productos no requiere admin, usamos el demo
     PRODUCTOS = await r.json();
   } catch {}
@@ -752,7 +760,7 @@ async function actualizarRecargo(id, valor) {
   if(p) p.recargo_bob = parseFloat(valor)||0;
   renderTabla();
   try {
-    await fetch('/api/productos/'+id+'/stock', {
+    await fetch('/tienda/api/productos/'+id+'/stock', {
       method:'PATCH', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({recargo_bob: parseFloat(valor)||0})
     });
@@ -768,7 +776,7 @@ async function toggleStock(id) {
   renderTabla();
   showToast(nuevoStock ? 'Marcado como En stock' : 'Marcado como Sin stock (pedido previo)', nuevoStock?'ok':'warn');
   try {
-    await fetch('/api/productos/'+id+'/stock', {method:'PATCH'});
+    await fetch('/tienda/api/productos/'+id+'/stock', {method:'PATCH'});
   } catch {}
 }
 
@@ -783,7 +791,7 @@ function toggleVisibilidad(id) {
       p.activo = !p.activo;
       renderTabla();
       showToast(p.activo ? 'Producto visible en catálogo' : 'Producto ocultado del catálogo', p.activo?'ok':'warn');
-      try { await fetch('/api/productos/'+id+'/visibilidad', {method:'PATCH'}); } catch {}
+      try { await fetch('/tienda/api/productos/'+id+'/visibilidad', {method:'PATCH'}); } catch {}
     }
   );
 }
@@ -838,7 +846,7 @@ async function editarProducto(id) {
   const imgs = p.imagenes || [];
   const exDiv = document.getElementById('imgExistentes');
   const exList = document.getElementById('imgExistList');
-  if(imgs.length) {
+  if(imgs.length) {	
     exDiv.style.display = 'block';
     exList.innerHTML = imgs.map((img,i) => `
       <div class="img-prev-item" id="imgex-${img.id||i}">
@@ -925,7 +933,7 @@ async function guardarProducto() {
   for(const f of files) fd.append('imagenes', f);
 
   try {
-    const url    = id ? `/api/productos/${id}` : '/api/productos';
+    const url    = id ? `/tienda/api/productos/${id}` : '/tienda/api/productos';
     const method = id ? 'PUT' : 'POST';
     const r = await fetch(url, {method, body: fd, credentials:'include'});
     const data = await r.json();
@@ -946,7 +954,7 @@ async function guardarProducto() {
 // ── PEDIDOS ──────────────────────────────────────────────────
 async function cargarPedidos() {
   try {
-    const r = await fetch('/api/pedidos', {credentials:'include'});
+    const r = await fetch('/tienda/api/pedidos', {credentials:'include'});
     PEDIDOS = await r.json();
     renderPedidos();
   } catch {
@@ -1008,7 +1016,7 @@ function verPedido(id) {
 
 async function confirmarPedido(id) {
   try {
-    await fetch('/api/pedidos/'+id+'/confirmar',{method:'POST',credentials:'include'});
+    await fetch('/tienda/api/pedidos/'+id+'/confirmar',{method:'POST',credentials:'include'});
     const p = PEDIDOS.find(x=>x.id===id);
     if(p) p.estado='confirmado';
     renderPedidos();
@@ -1019,7 +1027,7 @@ async function confirmarPedido(id) {
 // ── CLIENTES ─────────────────────────────────────────────────
 async function cargarClientes() {
   try {
-    const r = await fetch('/api/clientes',{credentials:'include'});
+    const r = await fetch('/tienda/api/clientes',{credentials:'include'});
     CLIENTES = await r.json();
     renderClientes();
   } catch {
@@ -1069,7 +1077,7 @@ function abrirWA(num){
 // ── LINK MAYORISTA ────────────────────────────────────────────
 async function cargarLinkMayor(){
   try {
-    const r = await fetch('/mayor-url',{credentials:'include'});
+    const r = await fetch('/tienda/mayor-url',{credentials:'include'});
     const d = await r.json();
     document.getElementById('linkMayorUrl').textContent = d.url;
     document.getElementById('linkMayorWA').href = `https://wa.me/?text=${encodeURIComponent('Hola! Te comparto el catálogo mayorista de TITANIUM STORE: '+d.url)}`;

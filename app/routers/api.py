@@ -1,3 +1,4 @@
+print("=== API.PY CARGADO ===", flush=True)
 from fastapi import APIRouter, Request, HTTPException
 from app.db import get_productos, get_tc, DEMO_TC
 from app.auth import get_current_user, require_admin
@@ -27,37 +28,114 @@ async def update_tc(data: TCUpdate, request: Request):
     return {"ok": True, "tc": data.valor}
 
 # ── Productos ────────────────────────────────────────────────
+# ── Productos ────────────────────────────────────────────────
+# ── Productos ────────────────────────────────────────────────
 @router.get("/productos")
-async def api_productos(request: Request):
-    prods = await get_productos(request.app.state.db)
-    user = get_current_user(request)
-    if not user:
-        for p in prods:
-            p.pop("precio_venta_mayor_usd", None)
-            p.pop("recargo_bob", None)
-            p.pop("cajas_en_stock", None)
-            p.pop("unidades_por_caja", None)
-    return prods
-
-class ProductoUpdate(BaseModel):
-    precio_venta_mayor_usd: Optional[float] = None
-    recargo_bob: Optional[float] = None
-    stock_fisico: Optional[bool] = None
-    activo: Optional[bool] = None
-    cajas_en_stock: Optional[int] = None
-    unidades_por_caja: Optional[int] = None
-
-@router.patch("/productos/{pid}")
-async def update_producto(pid: int, data: ProductoUpdate, request: Request):
-    require_admin(request)
+async def api_productos(request: Request, incluir_inactivos: bool = False):
+    import sys
+    print("=== DEBUG: NUEVA FUNCIÓN api_productos EJECUTÁNDOSE ===", file=sys.stderr, flush=True)
+    from app.db import get_tc
+    import asyncpg
+    import os
+    from dotenv import load_dotenv
+    from app.auth import get_current_user
+    
     db = request.app.state.db
-    if not db: return {"ok": True, "demo": True}
-    fields = {k: v for k, v in data.dict().items() if v is not None}
-    if not fields: return {"ok": True}
-    sets = ", ".join(f"{k}=${i+2}" for i, k in enumerate(fields))
-    vals = list(fields.values())
-    await db.execute(f"UPDATE productos SET {sets}, actualizado_en=NOW() WHERE id=$1", pid, *vals)
-    return {"ok": True}
+    tc = await get_tc(db)
+    user = get_current_user(request)
+    
+    print(f"DEBUG: tc = {tc}", flush=True)
+    print(f"DEBUG: user = {user}", flush=True)
+    
+    # Si no es admin, forzar incluir_inactivos=False
+    if not user:
+        incluir_inactivos = False
+    
+    print(f"DEBUG: incluir_inactivos = {incluir_inactivos}", flush=True)
+    
+    # Cargar variables de entorno
+    load_dotenv()
+    db_url = os.getenv("DATABASE_URL")
+    print(f"DEBUG: db_url = {db_url[:30]}..." if db_url else "DEBUG: db_url es None", flush=True)
+    
+    try:
+        # Conectar directamente a PostgreSQL
+        print("DEBUG: Intentando conectar a PostgreSQL...", flush=True)
+        conn = await asyncpg.connect(db_url)
+        print("DEBUG: Conexión exitosa!", flush=True)
+        
+        # Construir la consulta
+        where_clause = "" if incluir_inactivos else "WHERE p.activo = TRUE"
+        print(f"DEBUG: where_clause = {where_clause}", flush=True)
+        
+        query = """
+            SELECT p.*, m.nombre as marca, c.nombre as categoria,
+            ROUND(p.precio_venta_mayor_usd * $1, 2) as precio_mayor_bob,
+            ROUND(p.precio_venta_mayor_usd * $1 + p.recargo_bob, 2) as precio_minorista_bob,
+            $1 as tc_activo,
+            COALESCE(
+                (SELECT json_agg(json_build_object('id',i.id,'url',i.url,'orden',i.orden,'es_portada',i.es_portada)
+                 ORDER BY i.orden)
+                 FROM imagenes_producto i WHERE i.producto_id = p.id), '[]'::json
+            ) as imagenes
+            FROM productos p
+            JOIN marcas m ON m.id = p.marca_id
+            JOIN categorias c ON c.id = p.categoria_id
+        """
+        
+        if not incluir_inactivos:
+            query += " WHERE p.activo = TRUE"
+        
+        query += " ORDER BY p.orden, p.id"        
+        print("DEBUG: Ejecutando consulta SQL...", flush=True)
+        rows = await conn.fetch(query, tc)
+        print(f"DEBUG: Consulta ejecutada, {len(rows)} filas obtenidas", flush=True)
+        
+        await conn.close()
+        print("DEBUG: Conexión cerrada", flush=True)
+        
+        # Convertir filas a diccionarios
+        productos = []
+        for idx, row in enumerate(rows):
+            prod = dict(row)
+            print(f"DEBUG: Procesando fila {idx}, keys: {list(prod.keys())[:5]}...", flush=True)
+            
+            # Asegurar que 'imagenes' sea una lista válida
+            if isinstance(prod.get('imagenes'), str):
+                import json as json_lib
+                try:
+                    prod['imagenes'] = json_lib.loads(prod['imagenes'])
+                    print(f"DEBUG: imagenes parseadas, {len(prod['imagenes'])} imágenes", flush=True)
+                except:
+                    prod['imagenes'] = []
+            elif prod.get('imagenes') is None:
+                prod['imagenes'] = []
+            
+            # Si no es admin, eliminar datos sensibles
+            if not user:
+                prod.pop("precio_venta_mayor_usd", None)
+                prod.pop("recargo_bob", None)
+                prod.pop("cajas_en_stock", None)
+                prod.pop("unidades_por_caja", None)
+            
+            productos.append(prod)
+        
+        print(f"DEBUG: Procesamiento completado, {len(productos)} productos", flush=True)
+        return productos
+        
+    except Exception as e:
+        import traceback
+        print(f"ERROR en api_productos: {e}", flush=True)
+        print(f"TRACEBACK: {traceback.format_exc()}", flush=True)
+        # Fallback: usar get_productos original
+        prods = await get_productos(db)
+        if not user:
+            for p in prods:
+                p.pop("precio_venta_mayor_usd", None)
+                p.pop("recargo_bob", None)
+                p.pop("cajas_en_stock", None)
+                p.pop("unidades_por_caja", None)
+        return prods
 
 # ── Pedidos ──────────────────────────────────────────────────
 class ItemPedido(BaseModel):
