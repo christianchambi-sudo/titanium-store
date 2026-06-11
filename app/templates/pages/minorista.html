@@ -78,6 +78,81 @@ body{background:var(--bg);color:var(--tx);font-family:var(--fb);font-weight:400;
 .card:hover{background:var(--bg3)}.card:hover::after{opacity:1}
 .c-img{aspect-ratio:4/3;background:var(--bg3);border-radius:var(--r);display:flex;align-items:center;justify-content:center;position:relative;border:1px solid var(--bo);overflow:hidden}
 .c-img i{font-size:2.8rem;color:var(--td)}
+/* ===== CARRUSEL DE IMÁGENES ===== */
+.carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--r);
+}
+
+.carousel-images {
+    display: flex;
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.carousel-images img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.55);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    z-index: 10;
+    transition: all 0.2s ease;
+}
+
+.carousel-btn:hover {
+    background: rgba(0,0,0,0.8);
+    transform: translateY(-50%) scale(1.05);
+}
+
+.carousel-prev { left: 6px; }
+.carousel-next { right: 6px; }
+
+.carousel-dots {
+    position: absolute;
+    bottom: 1px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    z-index: 10;
+}
+
+.carousel-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.6);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.carousel-dot.active {
+    background: var(--go);
+    width: 16px;
+    border-radius: 4px;
+}
 /*.b-stk{position:absolute;top:8px;left:8px;font-size:.62rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 9px;border-radius:20px}*/
 .b-stk {
   position: relative;
@@ -162,6 +237,262 @@ footer{border-top:1px solid var(--bo);padding:1.75rem 1.5rem;text-align:center;f
 .card{animation:fadeUp .4s ease both}
 .card:nth-child(1){animation-delay:.04s}.card:nth-child(2){animation-delay:.08s}.card:nth-child(3){animation-delay:.12s}.card:nth-child(4){animation-delay:.16s}.card:nth-child(5){animation-delay:.2s}.card:nth-child(6){animation-delay:.24s}
 @media(max-width:640px){.nav-sub{display:none}.hero{padding:3rem 1rem 2rem}.cta-mayor{flex-direction:column;text-align:center}.grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}}
+/* ===== MODAL PARA MÓVIL ===== */
+.modal-imagen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.25s, opacity 0.25s ease;
+}
+
+.modal-imagen.open {
+    visibility: visible;
+    opacity: 1;
+}
+
+.modal-contenedor {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 12px;
+}
+
+/* Botón de cerrar - grande y fácil de tocar */
+.modal-cerrar {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10010;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.modal-cerrar:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+
+/* Carrusel grande del modal - ocupa la mayor parte */
+.modal-carousel {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #0a0a0a;
+    border-radius: 20px;
+    overflow: hidden;
+    touch-action: pan-y pinch-zoom;
+}
+
+.modal-carousel-images {
+    display: flex;
+    transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    height: 100%;
+}
+
+.modal-carousel-images img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    flex-shrink: 0;
+    background: #0a0a0a;
+    pointer-events: none;
+}
+
+/* Botones del carrusel - grandes para dedos */
+.modal-carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+    z-index: 10;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.modal-carousel-btn:active {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) scale(0.95);
+}
+
+.modal-carousel-prev { left: 8px; }
+.modal-carousel-next { right: 8px; }
+
+/* Dots (puntos) - más grandes */
+.modal-dots {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0 12px;
+    padding: 8px 0;
+}
+
+.modal-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.modal-dot.active {
+    background: var(--go);
+    width: 26px;
+    border-radius: 6px;
+}
+
+/* Información del producto dentro del modal */
+.modal-info {
+    text-align: center;
+    padding: 12px 0 20px;
+}
+
+.modal-nombre {
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    opacity: 0.9;
+}
+
+.modal-precio {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.modal-precio .precio-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.modal-precio .precio-valor {
+    font-family: var(--fd);
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--go);
+    line-height: 1;
+}
+
+.modal-precio .precio-unidad {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Botón de acción dentro del modal */
+.modal-agregar {
+    margin-top: 16px;
+    background: var(--go);
+    border: none;
+    border-radius: 40px;
+    color: white;
+    font-family: var(--fb);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 14px 20px;
+    width: 80%;
+    max-width: 260px;
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.modal-agregar:active {
+    transform: scale(0.97);
+    background: var(--gl);
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 480px) {
+    .modal-carousel {
+        border-radius: 16px;
+    }
+    
+    .modal-carousel-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 28px;
+    }
+    
+    .modal-precio .precio-valor {
+        font-size: 1.8rem;
+    }
+    
+    .modal-nombre {
+        font-size: 0.85rem;
+    }
+}
+/* Badge que indica múltiples fotos */
+.imagen-tarjeta {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.imagen-tarjeta img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.badge-multi {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(4px);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.3);
+    pointer-events: none;
+}
+
 </style>
 </head>
 <body>
@@ -224,6 +555,42 @@ footer{border-top:1px solid var(--bo);padding:1.75rem 1.5rem;text-align:center;f
 </div>
 
 <div class="toast" id="toast"></div>
+<!-- Modal para ver imágenes en grande (optimizado móvil) -->
+<div id="modalImagen" class="modal-imagen">
+    <div class="modal-contenedor">
+        <!-- Botón cerrar con X -->
+        <button class="modal-cerrar" id="modalCerrarBtn">✕</button>
+        
+        <!-- Carrusel grande -->
+        <div class="modal-carousel" id="modalCarousel">
+            <div class="modal-carousel-images" id="modalCarouselImages">
+                <!-- Las imágenes se insertan dinámicamente -->
+            </div>
+            <button class="modal-carousel-btn modal-carousel-prev" id="modalPrevBtn">‹</button>
+            <button class="modal-carousel-btn modal-carousel-next" id="modalNextBtn">›</button>
+        </div>
+        
+        <!-- Puntos indicadores -->
+        <div class="modal-dots" id="modalDots"></div>
+        
+        <!-- Información del producto -->
+        <div class="modal-info">
+            <div class="modal-nombre" id="modalNombre"></div>
+            <div class="modal-precio">
+                <span class="precio-label">Precio</span>
+                <span class="precio-valor" id="modalPrecio">Bs. 0,00</span>
+                <span class="precio-unidad">Bolivianos</span>
+            </div>
+        </div>
+        
+        <!-- Botón para agregar al carrito (opcional) -->
+        <div style="display: flex; justify-content: center;">
+            <button class="modal-agregar" id="modalAgregarBtn">
+                + Agregar al pedido
+            </button>
+        </div>
+    </div>
+</div>
 <footer><p>© 2025 TITANIUM STORE · La Paz, Bolivia</p></footer>
 
 <script>
@@ -246,17 +613,27 @@ document.querySelectorAll('.fb').forEach(b => b.addEventListener('click', () => 
 function fmt(n){ return 'Bs. ' + parseFloat(n).toLocaleString('es-BO',{minimumFractionDigits:2}); }
 function precioMin(p){ return p.precio_venta_mayor_usd * tc + p.recargo_bob; }
 
-function render(){
-  let items = PRODS;
-  if(filter==='bajo')       items = items.filter(p => p.tipo==='bajo');
-  else if(filter==='caja')  items = items.filter(p => p.tipo==='caja');
-  else if(filter!=='all')   items = items.filter(p => p.tamano===filter);
-  const stk = items.filter(p =>  p.stock_fisico);
-  const pre = items.filter(p => !p.stock_fisico);
-  let html = '';
-  if(stk.length) html += sec('En stock', stk);
-  if(pre.length) html += sec('Pedido previo — 3 a 5 días', pre);
-  document.getElementById('mainContent').innerHTML = html;
+function render() {
+    let items = PRODS;
+    if (filter === 'bajo') items = items.filter(p => p.tipo === 'bajo');
+    else if (filter === 'caja') items = items.filter(p => p.tipo === 'caja');
+    else if (filter !== 'all') items = items.filter(p => p.tamano === filter);
+    
+    const stk = items.filter(p => p.stock_fisico);
+    const pre = items.filter(p => !p.stock_fisico);
+    
+    let html = '';
+    if (stk.length) html += sec('En stock', stk);
+    if (pre.length) html += sec('Pedido previo — 3 a 5 días', pre);
+    document.getElementById('mainContent').innerHTML = html;
+    
+    // Inicializar detección de swipe en todos los carruseles
+    setTimeout(() => {
+        document.querySelectorAll('.carousel').forEach(carousel => {
+            const productoId = parseInt(carousel.dataset.id);
+            initSwipeDetection(carousel, productoId);
+        });
+    }, 50);
 }
 
 function sec(t, items){
@@ -266,44 +643,57 @@ function sec(t, items){
   </div>`;
 }
 
-function card(p){
-  const q  = cart[p.id]?.qty || 0;
-  const ic = iconMap[p.tipo] || 'ti-speakerphone';
-  // Obtener la URL de la primera imagen (portada)
-  const imgUrl = p.imagenes && p.imagenes.length > 0 ? p.imagenes[0].url : null;
-  
-  return `<div class="card">
-    <div class="c-img">
-      ${imgUrl ? `<img src="/tienda${imgUrl}" alt="${p.codigo}" style="width:100%;height:100%;object-fit:cover">` : `<i class="ti ${ic}"></i>`}
-    </div>
-    <div class="c-body">
-
-      <div>
-      <span class="b-stk ${p.stock_fisico?'yes':'no'}">${p.stock_fisico?'En stock':'Pedido previo'}</span>
-      <span class="b-tipo">${p.tipo}</span>
-      </div>
-
-      <div class="c-cod">${p.codigo}</div>
-      <div class="c-nam">${p.marca} ${p.codigo}</div>
-      <div class="c-desc">${p.descripcion}</div>
-      <div class="c-spec">${p.tamano} · ${p.potencia}</div>
-    </div>
-    <div class="c-price">
-      <div class="p-lbl">Precio por ${p.unidad_venta}</div>
-      <div class="p-bob" id="pb-${p.id}">${fmt(precioMin(p))}</div>
-      <div class="p-unit">Bolivianos</div>
-    </div>
-    <div class="c-act">
-      <div class="qty">
-        <button class="qb" onclick="chg(${p.id},-1)">−</button>
-        <span class="qn" id="qn-${p.id}">${q}</span>
-        <button class="qb" onclick="chg(${p.id},1)">+</button>
-      </div>
-      <button class="btn-add ${p.stock_fisico?'':'pre'}" onclick="chg(${p.id},1)">
-        ${p.stock_fisico?'Agregar':'Reservar'}
-      </button>
-    </div>
-  </div>`;
+function card(p) {
+    const q = cart[p.id]?.qty || 0;
+    const ic = iconMap[p.tipo] || 'ti-speakerphone';
+    const imagenes = p.imagenes || [];
+    
+    // Obtener la URL de la primera imagen (portada)
+    const imagenPortada = imagenes.length > 0 ? imagenes[0].url : null;
+    
+    // Generar HTML de la imagen (sin carrusel, solo imagen clickeable)
+    let imagenHtml = '';
+    if (imagenPortada) {
+        imagenHtml = `
+            <div class="imagen-tarjeta" onclick="abrirModal(${p.id})">
+                <img src="/tienda${imagenPortada}" alt="${p.codigo}" style="width:100%;height:100%;object-fit:cover">
+                ${imagenes.length > 1 ? `<span class="badge-multi">+${imagenes.length - 1}</span>` : ''}
+            </div>
+        `;
+    } else {
+        imagenHtml = `<i class="ti ${ic}" style="font-size:2.8rem;color:var(--td)"></i>`;
+    }
+    
+    return `<div class="card">
+        <div class="c-img">
+            ${imagenHtml}
+        </div>
+        <div class="c-body">
+            <div>
+                <span class="b-stk ${p.stock_fisico ? 'yes' : 'no'}">${p.stock_fisico ? 'En stock' : 'Pedido previo'}</span>
+                <span class="b-tipo">${p.tipo}</span>
+            </div>
+            <div class="c-cod">${p.codigo}</div>
+            <div class="c-nam">${p.marca} ${p.codigo}</div>
+            <div class="c-desc">${p.descripcion || ''}</div>
+            <div class="c-spec">${p.tamano} · ${p.potencia || ''}</div>
+        </div>
+        <div class="c-price">
+            <div class="p-lbl">Precio por ${p.unidad_venta}</div>
+            <div class="p-bob" id="pb-${p.id}">${fmt(precioMin(p))}</div>
+            <div class="p-unit">Bolivianos</div>
+        </div>
+        <div class="c-act">
+            <div class="qty">
+                <button class="qb" onclick="chg(${p.id},-1)">−</button>
+                <span class="qn" id="qn-${p.id}">${q}</span>
+                <button class="qb" onclick="chg(${p.id},1)">+</button>
+            </div>
+            <button class="btn-add ${p.stock_fisico ? '' : 'pre'}" onclick="chg(${p.id},1)">
+                ${p.stock_fisico ? 'Agregar' : 'Reservar'}
+            </button>
+        </div>
+    </div>`;
 }
 
 function chg(id, d){
@@ -398,9 +788,232 @@ function showToast(msg){
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2200);
 }
+// ===== FUNCIONES DEL CARRUSEL =====
+let touchStartX = 0;
+let touchEndX = 0;
 
+function cambiarImagen(productoId, direccion) {
+    const carousel = document.querySelector(`.carousel[data-id="${productoId}"]`);
+    if (!carousel) return;
+    
+    let currentIndex = parseInt(carousel.dataset.index) || 0;
+    const images = carousel.querySelectorAll('.carousel-images img');
+    const total = images.length;
+    
+    if (total <= 1) return;
+    
+    currentIndex = (currentIndex + direccion + total) % total;
+    carousel.dataset.index = currentIndex;
+    
+    const offset = -currentIndex * (100 / total);
+    carousel.querySelector('.carousel-images').style.transform = `translateX(${offset}%)`;
+    
+    // Actualizar dots
+    const dots = carousel.querySelectorAll('.carousel-dot');
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIndex);
+    });
+}
+
+function irAImagen(productoId, index) {
+    const carousel = document.querySelector(`.carousel[data-id="${productoId}"]`);
+    if (!carousel) return;
+    
+    carousel.dataset.index = index;
+    const images = carousel.querySelectorAll('.carousel-images img');
+    const total = images.length;
+    
+    const offset = -index * (100 / total);
+    carousel.querySelector('.carousel-images').style.transform = `translateX(${offset}%)`;
+    
+    const dots = carousel.querySelectorAll('.carousel-dot');
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+    });
+}
+
+function initSwipeDetection(carouselElement, productoId) {
+    if (!carouselElement) return;
+    
+    carouselElement.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    
+    carouselElement.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchEndX - touchStartX;
+        
+        if (Math.abs(diff) > 40) {
+            if (diff > 0) {
+                cambiarImagen(productoId, -1);
+            } else {
+                cambiarImagen(productoId, 1);
+            }
+        }
+    }, { passive: false });
+}
+
+// ===== MODAL CON SOPORTE TÁCTIL =====
+let modalProductoActual = null;
+let modalIndexActual = 0;
+let modalTouchStartX = 0;
+let modalTouchEndX = 0;
+
+function abrirModal(productoId) {
+    const producto = PRODS.find(p => p.id === productoId);
+    if (!producto) return;
+    
+    modalProductoActual = producto;
+    modalIndexActual = 0;
+    
+    const imagenes = producto.imagenes || [];
+    const modalImages = document.getElementById('modalCarouselImages');
+    const modalDots = document.getElementById('modalDots');
+    const modalNombre = document.getElementById('modalNombre');
+    const modalPrecio = document.getElementById('modalPrecio');
+    const modalAgregar = document.getElementById('modalAgregarBtn');
+    
+    // Guardar ID del producto en el botón agregar
+    if (modalAgregar) {
+        modalAgregar.onclick = () => {
+            chg(producto.id, 1);
+            cerrarModal();
+            showToast('Producto agregado al pedido');
+        };
+    }
+    
+    // Limpiar y llenar imágenes
+    modalImages.innerHTML = '';
+    modalDots.innerHTML = '';
+    
+    if (imagenes.length > 0) {
+        const total = imagenes.length;
+        modalImages.style.width = `${total * 100}%`;
+        
+        imagenes.forEach((img, idx) => {
+            // Imagen
+            const imgElement = document.createElement('img');
+            imgElement.src = `/tienda${img.url}`;
+            imgElement.alt = producto.codigo;
+            imgElement.style.width = `${100 / total}%`;
+            modalImages.appendChild(imgElement);
+            
+            // Dot
+            const dot = document.createElement('span');
+            dot.className = 'modal-dot';
+            if (idx === 0) dot.classList.add('active');
+            dot.onclick = (e) => {
+                e.stopPropagation();
+                modalIrAImagen(idx);
+            };
+            modalDots.appendChild(dot);
+        });
+        
+        modalImages.style.transform = 'translateX(0)';
+        
+        // Mostrar/ocultar botones según cantidad
+        const prevBtn = document.getElementById('modalPrevBtn');
+        const nextBtn = document.getElementById('modalNextBtn');
+        if (total <= 1) {
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+        } else {
+            prevBtn.style.display = 'flex';
+            nextBtn.style.display = 'flex';
+        }
+    }
+    
+    // Mostrar nombre y precio
+    modalNombre.textContent = `${producto.marca} ${producto.codigo} - ${producto.tamano}`;
+    modalPrecio.textContent = fmt(precioMin(producto));
+    
+    // Abrir modal
+    document.getElementById('modalImagen').classList.add('open');
+    document.body.style.overflow = 'hidden'; // Evitar scroll detrás
+    
+    // Inicializar detección de swipe en el modal
+    const modalCarousel = document.getElementById('modalCarousel');
+    modalCarousel.addEventListener('touchstart', (e) => {
+        modalTouchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    
+    modalCarousel.addEventListener('touchend', (e) => {
+        modalTouchEndX = e.changedTouches[0].screenX;
+        const diff = modalTouchEndX - modalTouchStartX;
+        
+        if (Math.abs(diff) > 40) {
+            if (diff > 0) {
+                modalCambiarImagen(-1);
+            } else {
+                modalCambiarImagen(1);
+            }
+        }
+    }, { passive: false });
+}
+
+function cerrarModal() {
+    document.getElementById('modalImagen').classList.remove('open');
+    document.body.style.overflow = '';
+    modalProductoActual = null;
+}
+
+function modalCambiarImagen(direccion) {
+    if (!modalProductoActual) return;
+    
+    const imagenes = modalProductoActual.imagenes || [];
+    const total = imagenes.length;
+    if (total <= 1) return;
+    
+    modalIndexActual = (modalIndexActual + direccion + total) % total;
+    const offset = -modalIndexActual * (100 / total);
+    document.getElementById('modalCarouselImages').style.transform = `translateX(${offset}%)`;
+    
+    // Actualizar dots
+    const dots = document.querySelectorAll('.modal-dot');
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === modalIndexActual);
+    });
+}
+
+function modalIrAImagen(index) {
+    if (!modalProductoActual) return;
+    
+    const imagenes = modalProductoActual.imagenes || [];
+    const total = imagenes.length;
+    if (index < 0 || index >= total) return;
+    
+    modalIndexActual = index;
+    const offset = -modalIndexActual * (100 / total);
+    document.getElementById('modalCarouselImages').style.transform = `translateX(${offset}%)`;
+    
+    // Actualizar dots
+    const dots = document.querySelectorAll('.modal-dot');
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === modalIndexActual);
+    });
+}
+
+// Eventos para cerrar modal
+document.getElementById('modalCerrarBtn')?.addEventListener('click', cerrarModal);
+document.getElementById('modalImagen')?.addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modalImagen')) {
+        cerrarModal();
+    }
+});
+
+// Eventos para botones del modal
+document.getElementById('modalPrevBtn')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    modalCambiarImagen(-1);
+});
+
+document.getElementById('modalNextBtn')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    modalCambiarImagen(1);
+});
 render();
 updateCart();
 </script>
+
 </body>
 </html>
