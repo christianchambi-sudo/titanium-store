@@ -1,0 +1,18 @@
+warning: in the working copy of 'app/templates/pages/minorista.html', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/app/templates/pages/minorista.html b/app/templates/pages/minorista.html[m
+[1mindex d434122..cd080af 100644[m
+[1m--- a/app/templates/pages/minorista.html[m
+[1m+++ b/app/templates/pages/minorista.html[m
+[36m@@ -253,6 +253,12 @@[m [mfunction card(p){[m
+       <span class="b-tipo">${p.tipo}</span>[m
+     </div>[m
+     <div class="c-body">[m
+[32m+[m[32m      <div>[m
+[32m+[m[32m      <span class="b-stk ${p.stock_fisico?'yes':'no'}">${p.stock_fisico?'En stock':'Pedido previo'}</span>[m
+[32m+[m[32m      <span class="b-tipo">${p.tipo}</span>[m
+[32m+[m[32m      </div>[m
+[32m+[m[41m      [m
+[32m+[m[32m      <div>&nbsp;</div>[m
+       <div class="c-cod">${p.codigo}</div>[m
+       <div class="c-nam">${p.marca} ${p.codigo}</div>[m
+       <div class="c-desc">${p.descripcion}</div>[m

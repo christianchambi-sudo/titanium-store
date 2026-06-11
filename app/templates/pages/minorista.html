@@ -253,6 +253,12 @@ function card(p){
       <span class="b-tipo">${p.tipo}</span>
     </div>
     <div class="c-body">
+      <div>
+      <span class="b-stk ${p.stock_fisico?'yes':'no'}">${p.stock_fisico?'En stock':'Pedido previo'}</span>
+      <span class="b-tipo">${p.tipo}</span>
+      </div>
+      
+      <div>&nbsp;</div>
       <div class="c-cod">${p.codigo}</div>
       <div class="c-nam">${p.marca} ${p.codigo}</div>
       <div class="c-desc">${p.descripcion}</div>
