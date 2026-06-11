@@ -13,37 +13,75 @@ def require_admin(request: Request):
     return _ra(request)
 
 # ── Listar ───────────────────────────────────────────────────
+# ── Listar (público, incluye imágenes) ───────────────────────
 @router.get("")
 async def listar(request: Request, incluir_inactivos: bool = False):
-    from app.db import get_tc, DEMO_PRODUCTOS, calcular_precios
-    require_admin(request)
-    db = request.app.state.db
-    tc = await get_tc(db)
-    if db:
-        try:
-            query = """
-                SELECT p.*, m.nombre as marca, c.nombre as categoria_nombre,
-                ROUND(p.precio_venta_mayor_usd * tc.valor, 2) as precio_mayor_bob,
-                ROUND(p.precio_venta_mayor_usd * tc.valor + p.recargo_bob, 2) as precio_minorista_bob,
-                tc.valor as tc_activo,
-                COALESCE(
-                    (SELECT json_agg(json_build_object('id',i.id,'url',i.url,'orden',i.orden,'es_portada',i.es_portada)
-                     ORDER BY i.orden)
-                     FROM imagenes_producto i WHERE i.producto_id = p.id), '[]'
-                ) as imagenes
-                FROM productos p
-                JOIN marcas m ON m.id = p.marca_id
-                JOIN categorias c ON c.id = p.categoria_id
-                CROSS JOIN (SELECT valor FROM tipo_cambio WHERE activo=TRUE LIMIT 1) tc
-                {}
-                ORDER BY p.orden, p.id
-            """.format("" if incluir_inactivos else "WHERE p.activo = TRUE")
-            rows = await db.fetch(query)
-            return [dict(r) for r in rows]
-        except Exception as e:
-            print(f"DB error: {e}")
-    # Demo
-    return [calcular_precios(dict(p), tc) for p in DEMO_PRODUCTOS]
+    import sys
+    print("=== DEBUG: FUNCIÓN listar EJECUTÁNDOSE ===", file=sys.stderr, flush=True)
+    print("=== DEBUG: incluir_inactivos =", incluir_inactivos, file=sys.stderr, flush=True)
+    from app.db import get_tc
+    import logging
+    import asyncpg
+    import os
+    from dotenv import load_dotenv
+    
+    logger = logging.getLogger(__name__)
+    
+    # Obtener tipo de cambio
+    tc = await get_tc(request.app.state.db)
+    
+    # Cargar variables de entorno
+    load_dotenv()
+    db_url = os.getenv("DATABASE_URL")
+    
+    try:
+        # Conectar directamente a PostgreSQL
+        conn = await asyncpg.connect(db_url)
+        logger.info("✅ Conexión directa a PostgreSQL establecida")
+        
+        # Construir la consulta (excluir inactivos si no es admin)
+        where_clause = "" if incluir_inactivos else "WHERE p.activo = TRUE"
+        
+        query = f"""
+            SELECT p.*, m.nombre as marca, c.nombre as categoria,
+            ROUND(p.precio_venta_mayor_usd * tc.valor, 2) as precio_mayor_bob,
+            ROUND(p.precio_venta_mayor_usd * tc.valor + p.recargo_bob, 2) as precio_minorista_bob,
+            tc.valor as tc_activo,
+            COALESCE(
+                (SELECT json_agg(json_build_object('id',i.id,'url',i.url,'orden',i.orden,'es_portada',i.es_portada)
+                 ORDER BY i.orden)
+                 FROM imagenes_producto i WHERE i.producto_id = p.id), '[]'
+            ) as imagenes
+            FROM productos p
+            JOIN marcas m ON m.id = p.marca_id
+            JOIN categorias c ON c.id = p.categoria_id
+            CROSS JOIN (SELECT $1 as valor) tc
+            {where_clause}
+            ORDER BY p.orden, p.id
+        """
+        
+        rows = await conn.fetch(query, tc)
+        await conn.close()
+        
+        # Convertir filas a diccionarios
+        productos = []
+        for row in rows:
+            prod = dict(row)
+            # Asegurar que 'imagenes' sea una lista válida
+            if isinstance(prod.get('imagenes'), str):
+                import json as json_lib
+                prod['imagenes'] = json_lib.loads(prod['imagenes'])
+            elif prod.get('imagenes') is None:
+                prod['imagenes'] = []
+            productos.append(prod)
+        
+        logger.info(f"✅ Cargados {len(productos)} productos con imágenes")
+        return productos
+        
+    except Exception as e:
+        logger.error(f"❌ Error en listar productos: {e}")
+        # Fallback: retornar lista vacía
+        return []
 
 # ── Crear ────────────────────────────────────────────────────
 @router.post("")

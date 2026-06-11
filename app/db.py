@@ -15,7 +15,7 @@ async def get_tc(db) -> float:
     return DEMO_TC
 
 async def get_productos(db) -> list:
-    """Obtiene productos SOLO de la base de datos real"""
+    """Obtiene productos con sus imágenes desde la BD"""
     if not db:
         print("❌ Error: No hay conexión a la base de datos")
         return []
@@ -25,7 +25,12 @@ async def get_productos(db) -> list:
             SELECT p.*, m.nombre as marca, c.nombre as categoria,
             ROUND(p.precio_venta_mayor_usd * tc.valor, 2) as precio_mayor_bob,
             ROUND(p.precio_venta_mayor_usd * tc.valor + p.recargo_bob, 2) as precio_minorista_bob,
-            tc.valor as tc_activo
+            tc.valor as tc_activo,
+            COALESCE(
+                (SELECT json_agg(json_build_object('id',i.id,'url',i.url,'orden',i.orden,'es_portada',i.es_portada)
+                 ORDER BY i.orden)
+                 FROM imagenes_producto i WHERE i.producto_id = p.id), '[]'::json
+            ) as imagenes
             FROM productos p
             JOIN marcas m ON m.id = p.marca_id
             JOIN categorias c ON c.id = p.categoria_id
@@ -34,6 +39,7 @@ async def get_productos(db) -> list:
             ORDER BY p.orden, p.id
         """)
         
+        import json
         productos = []
         for row in rows:
             producto = dict(row)
@@ -44,6 +50,11 @@ async def get_productos(db) -> list:
                 # Convertir Decimal a float
                 elif isinstance(value, Decimal):
                     producto[key] = float(value)
+            # Asegurar que imagenes sea una lista
+            if producto.get('imagenes') and isinstance(producto['imagenes'], str):
+                producto['imagenes'] = json.loads(producto['imagenes'])
+            elif producto.get('imagenes') is None:
+                producto['imagenes'] = []
             productos.append(producto)
         
         print(f"✅ Cargados {len(productos)} productos desde la BD")
@@ -52,6 +63,7 @@ async def get_productos(db) -> list:
     except Exception as e:
         print(f"❌ Error en get_productos: {e}")
         return []
+
 
 async def get_producto_by_id(db, producto_id: int) -> dict | None:
     """Obtiene un producto por ID"""
@@ -137,3 +149,19 @@ async def actualizar_producto(db, producto_id: int, producto_data: dict) -> dict
     except Exception as e:
         print(f"Error actualizando producto: {e}")
         raise
+
+async def test_connection():
+    """Prueba la conexión a la base de datos"""
+    from app.main import app
+    if hasattr(app, 'state') and hasattr(app.state, 'db') and app.state.db:
+        try:
+            async with app.state.db.acquire() as conn:
+                await conn.execute("SELECT 1")
+            print("✅ Conexión a BD activa")
+            return True
+        except Exception as e:
+            print(f"❌ Error en conexión: {e}")
+            return False
+    else:
+        print("⚠️ BD no inicializada")
+        return Falsey

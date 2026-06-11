@@ -9,7 +9,7 @@ templates = Jinja2Templates(directory="app/templates")
 @router.get("/login", response_class=HTMLResponse)
 async def login_get(request: Request):
     if get_current_user(request):
-        return RedirectResponse("/admin/panel", 302)
+        return RedirectResponse("/tienda/admin/panel", 302)
     return templates.TemplateResponse(request, "pages/admin_login.html", {})
 
 @router.post("/login", response_class=HTMLResponse)
@@ -21,7 +21,7 @@ async def login_post(request: Request,
         return templates.TemplateResponse(request, "pages/admin_login.html",
             {"error": "Usuario o contraseña incorrectos"})
     token = create_token(user)
-    resp  = RedirectResponse("/admin/panel", status_code=302)
+    resp  = RedirectResponse("/tienda/admin/panel", status_code=302)  # ← CAMBIADO
     resp.set_cookie("ts_auth", token, httponly=True, max_age=3600*8, samesite="lax")
     return resp
 
@@ -34,6 +34,6 @@ async def panel(request: Request):
 
 @router.get("/salir")
 async def salir():
-    resp = RedirectResponse("/admin/login", 302)
+    resp = RedirectResponse("/tienda/admin/login", 302)  # También cambia esta
     resp.delete_cookie("ts_auth")
     return resp
